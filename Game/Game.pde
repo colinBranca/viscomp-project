@@ -27,6 +27,8 @@ float pressedBeta = 0;
 float pressedMouseX = 0;
 float pressedMouseY = 0;
 
+float speed = 500;
+
 void mousePressed() {
   pressedMouseY = mouseY;
   pressedAlpha = alpha;
@@ -35,10 +37,14 @@ void mousePressed() {
 }
 
 void mouseDragged() {
-  alpha = pressedAlpha + (pressedMouseY - mouseY)/200;
+  alpha = pressedAlpha + (pressedMouseY - mouseY)/speed;
   alpha = between(alpha, -PI/3, PI/3);
-  beta = pressedBeta + (pressedMouseX - mouseX)/200;
+  beta = pressedBeta + (pressedMouseX - mouseX)/speed;
   beta = between(beta, -PI/3, PI/3);
+}
+
+void mouseWheel(MouseEvent e) {
+  speed += e.getCount()*100; 
 }
 
 float between(float n, float min, float max) {
