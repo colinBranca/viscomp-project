@@ -12,6 +12,10 @@ void draw() {
   directionalLight(50, 100, 125, 0, -1, 0);
   ambientLight(102, 102, 102);
   background(200);
+  fill(0, 102, 153);
+  textSize(100);
+  text(speed, 1, 1);
+  fill(100, 100, 100);
   translate(width/2, height/2, 0);
   rotateX(alpha);
   rotateZ(beta);
@@ -44,7 +48,8 @@ void mouseDragged() {
 }
 
 void mouseWheel(MouseEvent e) {
-  speed += e.getCount()*100; 
+  speed += e.getCount(); 
+  speed = between(speed, 0, 1000);
 }
 
 float between(float n, float min, float max) {
