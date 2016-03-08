@@ -15,12 +15,20 @@ void draw() {
   translate(width/2, height/2, 0);
   rotateX(rx);
   rotateZ(rz);
-  box(500, 20, 500);
+  box(1000, 20, 1000);
 }
 
 float rx = 0;
 float rz = 0;
+float currentX = 0;
+float currentY = 0;
+
+void mousePressed() {
+  currentX = mouseX;
+  currentY = mouseY;
+}
+
 void mouseDragged() {
-  rx = map(mouseX, 0, width/2, 0, PI/3);
-  rz = map(mouseY, 0, height/2, 0, PI/3); 
+  rx = map(currentX - mouseX, -width, width, -PI/3, PI/3);
+  rz = map(currentY - mouseY, -height, height, -PI/3, PI/3);
 }
