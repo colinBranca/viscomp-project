@@ -13,22 +13,40 @@ void draw() {
   ambientLight(102, 102, 102);
   background(200);
   translate(width/2, height/2, 0);
-  rotateX(rx);
-  rotateZ(rz);
+  rotateX(alpha);
+  rotateZ(beta);
   box(1000, 20, 1000);
 }
 
-float rx = 0;
-float rz = 0;
-float currentX = 0;
-float currentY = 0;
+float alpha = 0;
+float beta = 0;
+
+float pressedAlpha = 0;
+float pressedBeta = 0;
+
+float pressedMouseX = 0;
+float pressedMouseY = 0;
 
 void mousePressed() {
-  currentX = mouseX;
-  currentY = mouseY;
+  pressedMouseY = mouseY;
+  pressedAlpha = alpha;
+  pressedMouseX = mouseX;
+  pressedBeta = beta;
 }
 
 void mouseDragged() {
-  rx = map(currentX - mouseX, -width, width, -PI/3, PI/3);
-  rz = map(currentY - mouseY, -height, height, -PI/3, PI/3);
+  alpha = pressedAlpha + (pressedMouseY - mouseY)/200;
+  alpha = between(alpha, -PI/3, PI/3);
+  beta = pressedBeta + (pressedMouseX - mouseX)/200;
+  beta = between(beta, -PI/3, PI/3);
+}
+
+float between(float n, float min, float max) {
+  if(n > max) {
+    return max;
+  }
+  else if(n < min) {
+    return min;
+  }
+  return n;
 }
