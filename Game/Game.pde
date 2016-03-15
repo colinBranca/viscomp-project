@@ -43,7 +43,7 @@ void mousePressed() {
 void mouseDragged() {
   alpha = pressedAlpha + (pressedMouseY - mouseY)/speed;
   alpha = between(alpha, -PI/3, PI/3);
-  beta = pressedBeta + (pressedMouseX - mouseX)/speed;
+  beta = pressedBeta - (pressedMouseX - mouseX)/speed;
   beta = between(beta, -PI/3, PI/3);
 }
 
