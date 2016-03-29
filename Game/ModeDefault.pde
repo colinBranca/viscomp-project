@@ -4,10 +4,8 @@ Mode DEFAULT_MODE = new Mode() {
   
   void draw(Environment env) {
     camera();
-    fill(0, 102, 153);
-    background(200);
-    ambientLight(120, 120, 120);
-    directionalLight(160, 160, 160, 0, 1, 0);
+    background(255);
+    lights();
     
     debugText();
 
@@ -16,12 +14,15 @@ Mode DEFAULT_MODE = new Mode() {
   }
 
   void debugText() {
+    pushStyle();
+    fill(0, 0, 0);
     textFont(createFont("Monospaced", 12));
     textAlign(LEFT, BOTTOM);
     text("RotationX:     " + env.plate.rotX.toDegrees().format(FLOAT_FORMAT) + "\n"
        + "RotationZ:     " + env.plate.rotZ.toDegrees().format(FLOAT_FORMAT) + "\n"
        + "RotationSpeed: " + env.plate.rotSpeed.format(FLOAT_FORMAT), 
           TEXT_MARGIN, height - TEXT_MARGIN, 0);
+    popStyle();
   }
 
   void update(Environment env) {
