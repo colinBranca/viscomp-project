@@ -3,12 +3,14 @@ class ShapeCylinder extends Shape {
   final float height;
   final int resolution;
   PVector position;
+  ShapePlate plate;
 
-  ShapeCylinder(float radius, float height, int resolution, PVector position) {
+  ShapeCylinder(float radius, float height, int resolution, PVector position, ShapePlate plate) {
     this.radius = radius;
     this.height = height;
     this.resolution = resolution;
     this.position = position;
+    this.plate = plate;
 
     float angle;
     float[] x = new float[resolution + 1];
@@ -54,7 +56,7 @@ class ShapeCylinder extends Shape {
   
   void draw() {
     pushMatrix();
-    translate(position.x, position.y, position.z);
+    translate(position.x, -plate.height/2, position.y);
     shape(shape);
     popMatrix();
   }

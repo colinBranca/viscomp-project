@@ -1,7 +1,7 @@
 class ShapeBall extends ShapeSphere {
-  PVector position = new PVector();
-  PVector velocity = new PVector();
-  PVector gravityForce = new PVector();
+  PVector position = new PVector(0,0);
+  PVector velocity = new PVector(0,0);
+  PVector gravityForce = new PVector(0,0);
   final float gravityConstant = 1;
   final float normalForce = 1;
   final float mu = 0.3;
@@ -11,12 +11,11 @@ class ShapeBall extends ShapeSphere {
   ShapeBall(float radius, ShapePlate plate) {
     super(radius);
     this.plate = plate;
-    this.position.y = -plate.height / 2 - radius;
   }
 
   void update() {
     gravityForce.x = sin(plate.rotZ.value) * gravityConstant;
-    gravityForce.z = -sin(plate.rotX.value) * gravityConstant;
+    gravityForce.y = -sin(plate.rotX.value) * gravityConstant;
 
     PVector friction = velocity.copy();
     friction.mult(-1);
@@ -27,6 +26,7 @@ class ShapeBall extends ShapeSphere {
     position.add(velocity);
 
     checkEdges();
+    checkCylinderCollision();
   }
 
   void checkEdges() {
@@ -34,15 +34,27 @@ class ShapeBall extends ShapeSphere {
       velocity.x = velocity.x * -1;
       position.x = constrain(position.x, -plate.width/2, plate.width/2);
     }
-    if (position.z > plate.depth/2 || position.z < -plate.depth/2) {
-      velocity.z = velocity.z * -1;
-      position.z = constrain(position.z, -plate.depth/2, plate.depth/2);
+    if (position.y > plate.depth/2 || position.y < -plate.depth/2) {
+      velocity.y = velocity.y * -1;
+      position.y = constrain(position.y, -plate.depth/2, plate.depth/2);
+    }
+  }
+  
+  void checkCylinderCollision() {
+    for(ShapeCylinder cylinder : plate.cylinders) {
+      float dist = position.dist(cylinder.position);
+      float minDist = radius + cylinder.radius;
+      if(dist < minDist) {
+        PVector n = position.copy().sub(cylinder.position).normalize();
+        position = position.copy().add(n.copy().mult(minDist - dist));
+        velocity = velocity.sub(n.mult(2*velocity.dot(n)));
+      }
     }
   }
 
   void draw() {
     pushMatrix();
-    translate(position.x, position.y, position.z);
+    translate(position.x, -plate.height/2 - radius, position.y);
     shape(shape);
     popMatrix();
   }
