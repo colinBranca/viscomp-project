@@ -11,7 +11,7 @@ void setup() {
   env.mode = DEFAULT_MODE;
 
   // Create plate
-  env.plate = new ShapePlate(300, 10, 300);
+  env.plate = new ShapePlate(width/2, width/70, width/2);
   env.plate.fill(150, 150, 150);
   env.plate.rotSpeed = new BoundedFloat(50, 1, 100);
   env.plate.rotX = new BoundedFloat(0, - PI / 3, PI / 3);
