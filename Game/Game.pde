@@ -15,7 +15,6 @@ void setup() {
   env.plate.fill(150, 150, 150);
   env.plate.rotSpeed = new BoundedFloat(50, 1, 100);
   env.plate.rotX = new BoundedFloat(0, - PI / 3, PI / 3);
-  env.plate.rotY = new BoundedFloat(0, -90, 90);
   env.plate.rotZ = new BoundedFloat(0, - PI / 3, PI / 3);
   
   // Create ball and add to the plate

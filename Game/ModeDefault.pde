@@ -32,7 +32,7 @@ Mode DEFAULT_MODE = new Mode() {
   };
 
   void mouseDragged(Environment env) {
-    env.plate.rotate(pmouseY - mouseY, 0, mouseX - pmouseX);
+    env.plate.rotate(pmouseY - mouseY, mouseX - pmouseX);
   };
 
   void mouseClicked(Environment env) {

@@ -2,7 +2,6 @@ class ShapePlate extends ShapeBox {
   final float SPEED_FACTOR = 0.0001;
 
   BoundedFloat rotX;     // Rotation arround world's X-axis
-  BoundedFloat rotY;     // Rotation arround world's Y-axis
   BoundedFloat rotZ;     // Rotation arround world's Z-axis
   BoundedFloat rotSpeed; // Rotation speed
 
@@ -14,10 +13,9 @@ class ShapePlate extends ShapeBox {
     children = new ArrayList<Shape>();
   }
 
-  void rotate(float x, float y, float z) {
-    rotX = rotX.add(x * rotSpeed.value * SPEED_FACTOR);
-    rotY = rotY.add(y * rotSpeed.value * SPEED_FACTOR);
-    rotZ = rotZ.add(z * rotSpeed.value * SPEED_FACTOR);
+  void rotate(float diffX, float diffZ) {
+    rotX = rotX.add(diffX * rotSpeed.value * SPEED_FACTOR);
+    rotZ = rotZ.add(diffZ * rotSpeed.value * SPEED_FACTOR);
   }
 
   void addRotationSpeed(float n) {
@@ -28,7 +26,6 @@ class ShapePlate extends ShapeBox {
     pushMatrix();
 
     rotateX(rotX.value);
-    rotateY(rotY.value);
     rotateZ(rotZ.value);
     // shape.rotateN() would rotate arround shape's N-axis,
     // which is not what we want here.
