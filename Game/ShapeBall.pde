@@ -43,7 +43,7 @@ class ShapeBall extends ShapeSphere {
   void draw() {
     pushMatrix();
     translate(position.x, position.y, position.z);
-    sphere(radius);
+    shape(shape);
     popMatrix();
   }
 }
