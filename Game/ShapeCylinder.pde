@@ -31,7 +31,7 @@ class ShapeCylinder extends Shape {
     side.endShape();
     shape.addChild(side);
     
-    // Create the top
+    // Create the bottom
     PShape bottom = createShape();
     bottom.beginShape(TRIANGLE_FAN);
     for (int i = 0; i != x.length; ++i) {
