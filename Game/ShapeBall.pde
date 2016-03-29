@@ -42,11 +42,9 @@ class ShapeBall extends ShapeSphere {
   
   void checkCylinderCollision() {
     for(ShapeCylinder cylinder : plate.cylinders) {
-      float dist = position.dist(cylinder.position);
-      float minDist = radius + cylinder.radius;
-      if(dist < minDist) {
+      if(position.dist(cylinder.position) < radius + cylinder.radius) {
         PVector n = position.copy().sub(cylinder.position).normalize();
-        position = position.copy().add(n.copy().mult(minDist - dist));
+        position = cylinder.position.copy().add(n.copy().mult(radius + cylinder.radius));
         velocity = velocity.sub(n.mult(2*velocity.dot(n)));
       }
     }
