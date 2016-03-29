@@ -10,6 +10,7 @@ Mode DEFAULT_MODE = new Mode() {
     debugText();
 
     translate(width/2, height/2, 0); // Draw plate at the center
+    env.plate.update();
     env.plate.draw();
   }
 
