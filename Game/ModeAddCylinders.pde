@@ -36,9 +36,9 @@ Mode ADD_CYLINDERS_MODE = new Mode() {
   
   void mouseClicked(Environment env) {
     PVector pos = new PVector(
-      constrain(mouseX - width/2.0, -env.plate.width/2, env.plate.width),
+      constrain(mouseX - width/2, -env.plate.width/2 + CYLINDER_RADIUS, env.plate.width/2 - CYLINDER_RADIUS),
       -env.plate.height/2,
-      constrain(mouseY - height/2.0, -env.plate.depth/2, env.plate.depth)
+      constrain(mouseY - height/2, -env.plate.depth/2 + CYLINDER_RADIUS, env.plate.depth/2 - CYLINDER_RADIUS)
     );
     
     ShapeCylinder cylinder = new ShapeCylinder(CYLINDER_RADIUS, CYLINDER_HEIGHT, CYLINDER_RESOLUTION, pos);
