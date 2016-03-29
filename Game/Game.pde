@@ -20,7 +20,6 @@ void setup() {
   // Create ball and add to the plate
   ShapeBall ball = new ShapeBall(20, env.plate);
   env.plate.addChild(ball);
-  
 }
 
 void draw() {
