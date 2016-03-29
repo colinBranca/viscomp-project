@@ -1,28 +1,30 @@
-Plate plate;
+Environment env = new Environment();
 
 void settings() {
-  fullScreen(P3D);
+  size(800, 800, P3D);
 }
 
 void setup() {
   noStroke();
-  camera();
-  
-  plate = new Plate(300, 10, 300);
-  plate.fill(0, 256, 256);
-  plate.setRotSpeed(50.0);
-  plate.setRotateXBounds(- PI / 3, PI / 3);
+
+  env.mode = DEFAULT_MODE;
+
+  env.plate = new ShapePlate(300, 10, 300);
+  env.plate.fill(150, 150, 150);
+  env.plate.rotSpeed = new BoundedFloat(50, 1, 100);
+  env.plate.rotX = new BoundedFloat(0, - PI / 3, PI / 3);
+  env.plate.rotY = new BoundedFloat(0, -90, 90);
+  env.plate.rotZ = new BoundedFloat(0, - PI / 3, PI / 3);
 }
 
 void draw() {
-  background(200);
-  directionalLight(120, 120, 120, 0, 1, 0);
-  ambientLight(120, 120, 120);
-  translate(width/2, height/2, 0);
-  
-  plate.draw();
+  env.mode.update(env);
+  env.mode.draw(env);
+}
+void mouseDragged() {
+  env.mode.mouseDragged(env);
 }
 
-void mouseDragged() {
-  plate.rotateX(pmouseY - mouseY);
+void mouseWheel(MouseEvent event) {
+  env.mode.mouseWheel(env, event);
 }

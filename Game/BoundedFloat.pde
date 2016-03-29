@@ -1,33 +1,48 @@
 class BoundedFloat {
-  private float value;
-  private float min;
-  private float max;
+  final float value;
+  final float min;
+  final float max;
 
   BoundedFloat() {
     value = 0;
     min = Integer.MIN_VALUE;
     max = Integer.MAX_VALUE;
   }
-
-  public void setBounds(float min, float max) {
+  
+  BoundedFloat(float value, float min, float max) {
     this.min = min;
     this.max = max;
-  }
-
-  public void setValue(float value) {
     // See: https://processing.org/reference/constrain_.html
     this.value = constrain(value, min, max);
   }
-  
-  public void changeValue(float diff) {
-    setValue(value + diff);
-  }
 
-  public float getValue() {
-    return value;
+  public BoundedFloat withValue(float value) {
+    return new BoundedFloat(value, min, max);
   }
   
-  public Boolean isExtremum() {
-    return value == min || value == max;
+  public BoundedFloat add(float diff) {
+    return withValue(value + diff);
+  }
+  
+  public Boolean isMin() {
+    return value == min;
+  }
+  
+  public Boolean isMax() {
+    return value == max;
+  }
+  
+  public String toString() {
+    return format("%f");
+  }
+  
+  public String format(String format) {
+    return String.format(format, value)
+         + " (min: " + String.format(format, min)
+         + ", max: " + String.format(format, max) + ")";
+  }
+  
+  public BoundedFloat toDegrees() {
+    return new BoundedFloat(degrees(value), degrees(min), degrees(max));
   }
 }

@@ -1,7 +1,5 @@
 abstract class Shape {
-  protected PShape shape;
-
-  abstract void update();
+  PShape shape;
 
   void draw() {
     shape(shape);
