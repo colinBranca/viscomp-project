@@ -19,6 +19,7 @@ void setup() {
   
   // Create ball and add to the plate
   ShapeBall ball = new ShapeBall(20, env.plate);
+  ball.fill(255, 180, 255);
   env.plate.addChild(ball);
 }
 
