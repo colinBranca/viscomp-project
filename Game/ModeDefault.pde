@@ -2,15 +2,17 @@ Mode DEFAULT_MODE = new Mode() {
   final float TEXT_MARGIN = 5;
   final String FLOAT_FORMAT = "%7.2f";
   
+  void enter(Environment env) {
+    perspective();
+  }
+  
   void draw(Environment env) {
-    camera();
     background(255);
     lights();
     
     debugText();
 
     translate(width/2, height/2, 0); // Draw plate at the center
-    env.plate.update();
     env.plate.draw();
   }
 
@@ -27,7 +29,14 @@ Mode DEFAULT_MODE = new Mode() {
   }
 
   void update(Environment env) {
+    env.plate.update();
   };
+  
+  void keyPressed(Environment env) {
+    if (key == CODED && keyCode == SHIFT) {
+      env.switchMode(ADD_CYLINDERS_MODE);
+    }
+  }
 
   void keyReleased(Environment env) {
   };

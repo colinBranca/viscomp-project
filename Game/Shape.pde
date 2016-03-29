@@ -11,4 +11,8 @@ abstract class Shape {
   void fill(float r, float g, float b) {
     shape.setFill(color(r, g, b));
   }
+  
+  void fill(color c) {
+    shape.setFill(c);
+  }
 }
