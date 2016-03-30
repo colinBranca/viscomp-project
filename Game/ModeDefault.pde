@@ -30,7 +30,7 @@ Mode DEFAULT_MODE = new Mode() {
 
   void update(Environment env) {
     env.plate.update();
-  };
+  }
   
   void keyPressed(Environment env) {
     if (key == CODED && keyCode == SHIFT) {
@@ -38,15 +38,9 @@ Mode DEFAULT_MODE = new Mode() {
     }
   }
 
-  void keyReleased(Environment env) {
-  };
-
   void mouseDragged(Environment env) {
     env.plate.rotate(pmouseY - mouseY, mouseX - pmouseX);
-  };
-
-  void mouseClicked(Environment env) {
-  };
+  }
 
   void mouseWheel(Environment env, MouseEvent event) {
     env.plate.addRotationSpeed(event.getCount());

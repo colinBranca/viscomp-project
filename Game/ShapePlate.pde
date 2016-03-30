@@ -7,11 +7,11 @@ class ShapePlate extends ShapeBox {
 
   ArrayList<ShapeCylinder> cylinders;
   ShapeBall ball;
-  
+
 
   ShapePlate(float width, float height, float depth) {
     super(width, height, depth);
-    
+
     cylinders = new ArrayList<ShapeCylinder>();
   }
 
@@ -34,19 +34,19 @@ class ShapePlate extends ShapeBox {
 
     super.draw();
     ball.draw();
-    
-    for(ShapeCylinder cylinder : cylinders) {
+
+    for (ShapeCylinder cylinder : cylinders) {
       cylinder.draw();
     }
 
     popMatrix();
   }
-  
+
   void update() {
     super.update();
     ball.update();
-    
-    for(ShapeCylinder cylinder : cylinders) {
+
+    for (ShapeCylinder cylinder : cylinders) {
       cylinder.update();
     }
   }

@@ -1,7 +1,7 @@
 Environment env = new Environment();
 
 void settings() {
-  size(800, 800, P3D);
+  fullScreen(P3D);
 }
 
 void setup() {
@@ -17,10 +17,9 @@ void setup() {
   env.plate.rotX = new BoundedFloat(0, - PI / 3, PI / 3);
   env.plate.rotZ = new BoundedFloat(0, - PI / 3, PI / 3);
 
-  // Create ball and add to the plate
-  ShapeBall ball = new ShapeBall(20, env.plate);
-  ball.fill(255, 180, 255);
-  env.plate.ball = ball;
+  // Create ball
+  env.plate.ball = new ShapeBall(20, env.plate);
+  env.plate.ball.fill(255, 180, 255);
 }
 
 void draw() {

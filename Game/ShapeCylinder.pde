@@ -6,6 +6,8 @@ class ShapeCylinder extends Shape {
   ShapePlate plate;
 
   ShapeCylinder(float radius, float height, int resolution, PVector position, ShapePlate plate) {
+    super();
+    
     this.radius = radius;
     this.height = height;
     this.resolution = resolution;
@@ -34,7 +36,7 @@ class ShapeCylinder extends Shape {
     }
     side.endShape();
     shape.addChild(side);
-    
+
     // Create the bottom
     PShape bottom = createShape();
     bottom.beginShape(TRIANGLE_FAN);
@@ -43,7 +45,7 @@ class ShapeCylinder extends Shape {
     }
     bottom.endShape();
     shape.addChild(bottom);
-    
+
     // Create the top
     PShape top = createShape();
     top.beginShape(TRIANGLE_FAN);
@@ -53,11 +55,11 @@ class ShapeCylinder extends Shape {
     top.endShape();
     shape.addChild(top);
   }
-  
+
   void draw() {
     pushMatrix();
     translate(position.x, -plate.height/2, position.y);
-    shape(shape);
+    super.draw();
     popMatrix();
   }
 }

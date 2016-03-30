@@ -1,7 +1,7 @@
 class ShapeBall extends ShapeSphere {
-  PVector position = new PVector(0,0);
-  PVector velocity = new PVector(0,0);
-  PVector gravityForce = new PVector(0,0);
+  PVector position = new PVector(0, 0);
+  PVector velocity = new PVector(0, 0);
+  PVector gravityForce = new PVector(0, 0);
   final float gravityConstant = 1;
   final float normalForce = 1;
   final float mu = 0.3;
@@ -39,10 +39,10 @@ class ShapeBall extends ShapeSphere {
       position.y = constrain(position.y, -plate.depth/2, plate.depth/2);
     }
   }
-  
+
   void checkCylinderCollision() {
-    for(ShapeCylinder cylinder : plate.cylinders) {
-      if(position.dist(cylinder.position) < radius + cylinder.radius) {
+    for (ShapeCylinder cylinder : plate.cylinders) {
+      if (position.dist(cylinder.position) < radius + cylinder.radius) {
         PVector n = position.copy().sub(cylinder.position).normalize();
         position = cylinder.position.copy().add(n.copy().mult(radius + cylinder.radius));
         velocity = velocity.sub(n.mult(2*velocity.dot(n)));
@@ -53,7 +53,7 @@ class ShapeBall extends ShapeSphere {
   void draw() {
     pushMatrix();
     translate(position.x, -plate.height/2 - radius, position.y);
-    shape(shape);
+    super.draw();
     popMatrix();
   }
 }

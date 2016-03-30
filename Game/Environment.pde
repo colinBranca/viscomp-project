@@ -6,7 +6,7 @@ class Environment {
     if (this.mode != null) {
       this.mode.exit(this);
     }
-    
+
     this.mode = mode;
     mode.enter(this);
   }
