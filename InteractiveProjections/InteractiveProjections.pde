@@ -8,9 +8,6 @@ void settings() {
   size(1000, 1000, P2D);
 }
 
-void setup() {
-}
-
 void draw(){
   background(256, 256, 256);
   translate(width/2, height/2);
