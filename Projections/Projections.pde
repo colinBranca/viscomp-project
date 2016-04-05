@@ -187,13 +187,10 @@ float[] matrixProduct(float[][] a, float[] b) {
   float[] result = new float[a.length];
   
   for(int i = 0 ; i != a.length; ++i) {
-    float sumProduct = 0.0;
     for(int j = 0; j != a[0].length; ++j) {
-      sumProduct += a[i][j] * b[j];
-    } //end j
-    
-    result[i] = sumProduct;
-  } //end i
+      result[i] += a[i][j] * b[j];
+    }
+  }
   
   return result;
 }
