@@ -49,10 +49,10 @@ void keyPressed() {
     deltaRotateX -= 0.01;
   }
   
-  if (key == CODED && keyCode == RIGHT) {
+  if (key == CODED && keyCode == LEFT) {
     deltaRotateY += 0.01;
   }
-  else if (key == CODED && keyCode == LEFT) {
+  else if (key == CODED && keyCode == RIGHT) {
     deltaRotateY -= 0.01;
   }
 };
@@ -65,10 +65,10 @@ void keyReleased() {
     deltaRotateX += 0.01;
   }
   
-  if (key == CODED && keyCode == RIGHT) {
+  if (key == CODED && keyCode == LEFT) {
     deltaRotateY -= 0.01;
   }
-  else if (key == CODED && keyCode == LEFT) {
+  else if (key == CODED && keyCode == RIGHT) {
     deltaRotateY += 0.01;
   }
 };
