@@ -127,8 +127,7 @@ My2DBox projectBox(My3DPoint eye, My3DBox box) {
 /*****************************************/
 
 float[] homogeneous3DPoint (My3DPoint p) {
-  float[] result = {p.x, p.y, p.z , 1};
-  return result;
+  return new float[] {p.x, p.y, p.z , 1};
 }
 
 /**************************************/
