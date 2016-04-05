@@ -203,7 +203,7 @@ My3DBox transformBox(My3DBox box, float[][] transformMatrix) {
   
   for(int i = 0; i != box.p.length; ++i) {
     My3DPoint p = box.p[i];
-    result[i] = euclidian3DPoint(matrixProduct(transformMatrix, new float[] {p.x, p.y, p.z, 1}));
+    result[i] = euclidian3DPoint(matrixProduct(transformMatrix, homogeneous3DPoint(p)));
   }
   
   return new My3DBox(result);
