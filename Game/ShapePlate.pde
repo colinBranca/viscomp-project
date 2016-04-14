@@ -32,12 +32,13 @@ class ShapePlate extends ShapeBox {
     // shape.rotateN() would rotate arround shape's N-axis,
     // which is not what we want here.
 
-    super.draw();
     ball.draw();
 
     for (ShapeCylinder cylinder : cylinders) {
       cylinder.draw();
     }
+
+    super.draw();
 
     popMatrix();
   }
