@@ -18,11 +18,11 @@ void setup() {
 }
 
 void draw() {
-  if(thresholdBar.getPos() != thresholdValue) {
+  if (thresholdBar.getPos() != thresholdValue) {
     thresholdValue = thresholdBar.getPos();
     generateResult();
   }
-  
+
   background(0, 0, 0);
   image(img, width/4, 0);
   image(result, 0, height/2);
@@ -32,7 +32,7 @@ void draw() {
   thresholdBar.update();
 }
 
-void generateResult(){
+void generateResult() {
   // create a new, initially transparent, 'result' image
   for (int i = 0; i < img.width * img.height; ++i) {
     if (brightness(img.pixels[i]) > thresholdValue * 255.0) {
@@ -44,4 +44,53 @@ void generateResult(){
   result.updatePixels();
 }
 
-void hue(){}
+void hue() {
+}
+
+PImage sobel(PImage img) {
+  float[][] hKernel = { { 0, 1, 0 }, 
+    { 0, 0, 0 }, 
+    { 0, -1, 0 } };
+  float[][] vKernel = { { 0, 0, 0 }, 
+    { 1, 0, -1 }, 
+    { 0, 0, 0 } };
+  PImage result = createImage(img.width, img.height, ALPHA);
+  // clear the image
+  for (int i = 0; i < img.width * img.height; i++) {
+    result.pixels[i] = color(0);
+  }
+  float max=0;
+  float[] buffer = new float[img.width * img.height];
+  // *************************************
+  // Implement here the double convolution
+  // *************************************
+  float sum_h = 0.f;
+  float sum_v = 0.f;
+  for( int y = 0; y < img.height; y++){
+    for(int x = 0; x < img.width; x++){
+      for( int range = -1 ; range <= 1; range++){
+        int pX = x+range;
+        int pY = y+range;
+      }
+    }
+  }
+  
+  
+  for (int y = 2; y < img.height - 2; y++) { // Skip top and bottom edges
+    for (int x = 2; x < img.width - 2; x++) { // Skip left and right
+      if (buffer[y * img.width + x] > (int)(max * 0.3f)) { // 30% of the max
+        result.pixels[y * img.width + x] = color(255);
+      } else {
+        result.pixels[y * img.width + x] = color(0);
+      }
+    }
+  }
+  return result;
+}
+
+float convolution(float x, float y){
+  float result = 0.f;
+  
+  
+  return result;
+}
