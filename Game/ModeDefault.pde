@@ -21,7 +21,9 @@ Mode DEFAULT_MODE = new Mode() {
     fill(0, 0, 0);
     textFont(createFont("Monospaced", 12));
     textAlign(LEFT, BOTTOM);
-    text("RotationX:     " + env.plate.rotX.toDegrees().format(FLOAT_FORMAT) + "\n"
+    text(
+      "frameRate:     " + frameRate + "\n"
+       + "RotationX:     " + env.plate.rotX.toDegrees().format(FLOAT_FORMAT) + "\n"
        + "RotationZ:     " + env.plate.rotZ.toDegrees().format(FLOAT_FORMAT) + "\n"
        + "RotationSpeed: " + env.plate.rotSpeed.format(FLOAT_FORMAT), 
           TEXT_MARGIN, height - TEXT_MARGIN, 0);
