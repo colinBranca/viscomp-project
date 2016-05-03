@@ -37,7 +37,7 @@ void draw() {
 
   background(0, 0, 0);
   image(img, width/4, 0);
-  image(sobel(img), 0, height/2);
+  image(result, 0, height/2); //ce n'est pas le bon result
   image(resultHue, width/2, height/2);
 
   thresholdBar.display();
@@ -71,7 +71,6 @@ void hueImage() {
   resultHue.updatePixels();
 }
 
-
 PImage sobel(PImage img) {
   float[][] hKernel = { { 0, 1, 0 }, 
     { 0, 0, 0 }, 
@@ -91,18 +90,6 @@ PImage sobel(PImage img) {
   // *************************************
   float sum_h = 0.f;
   float sum_v = 0.f;
-<<<<<<< HEAD
-  for ( int y = 0; y < img.height; y++) {
-    for (int x = 0; x < img.width; x++) {
-      for ( int range = -1; range <= 1; range++) {
-        int pX = x+range;
-        int pY = y+range;
-      }
-    }
-  }
-
-
-=======
   
   //Convolution
   for( int x = 0; x < img.width; x++){
@@ -119,25 +106,18 @@ PImage sobel(PImage img) {
   }
   
   //Store in the result
->>>>>>> origin/Week08
   for (int y = 2; y < img.height - 2; y++) { // Skip top and bottom edges
     for (int x = 2; x < img.width - 2; x++) { // Skip left and right
       if (buffer[y * img.width + x] > (int)(max * 0.3f)) { // 30% of the max
-        result.pixels[y * img.width + x] = color(255);
+        result.pixels[y * img.width + x] = 0xFFFFFF;
       } else {
-        result.pixels[y * img.width + x] = color(0);
+        result.pixels[y * img.width + x] = 0;
       }
     }
   }
   return result;
 }
 
-<<<<<<< HEAD
-float convolution(float x, float y) {
-  float result = 0.f;
-
-
-=======
 float convolution(PImage img, float[][]k, int x, int y){
   float result = 0.f;
   
@@ -146,11 +126,10 @@ float convolution(PImage img, float[][]k, int x, int y){
       int px = x+i;
       int py = y+i;
       if(!(px<0 || py<0)){
-        result = result + (k[i][j]*img.pixels[img.width*px + py]);
+        result = result + (k[i+1][j+1]*img.pixels[img.width*px + py]);
       }
     }
   }
   
->>>>>>> origin/Week08
   return result;
 }
