@@ -2,7 +2,11 @@ PImage img;
 PImage result;
 PImage resultHue;
 HScrollbar thresholdBar;
+HScrollbar minHueBar;
+HScrollbar maxHueBar;
 float thresholdValue = 0;
+float minHueValue = 0;
+float maxHueValue = 0;
 
 void settings() {
   size(1600, 1200);
@@ -10,7 +14,9 @@ void settings() {
 
 void setup() {
   img = loadImage("board1.jpg");
-  thresholdBar = new HScrollbar(width/4, height/2 - 20, width/2, 20);
+  thresholdBar = new HScrollbar(0, height/2 + 40, width/2, 20);
+  minHueBar = new HScrollbar(width/2, height/2 + 20, width/2, 20);
+  maxHueBar = new HScrollbar(width/2, height/2 + 60, width/2, 20);
   //noLoop();
   // no interactive behaviour: draw() will be called only once.
   result = createImage(width/2, height/2, RGB);
@@ -23,6 +29,12 @@ void draw() {
     generateResult();
   }
 
+  if (minHueBar.getPos() != minHueValue || maxHueBar.getPos() != maxHueValue) {
+    minHueValue = minHueBar.getPos();
+    maxHueValue = maxHueBar.getPos();
+    hueImage();
+  }
+
   background(0, 0, 0);
   image(img, width/4, 0);
   image(result, 0, height/2);
@@ -30,6 +42,10 @@ void draw() {
 
   thresholdBar.display();
   thresholdBar.update();
+  minHueBar.display();
+  minHueBar.update();
+  maxHueBar.display();
+  maxHueBar.update();
 }
 
 void generateResult() {
@@ -44,8 +60,17 @@ void generateResult() {
   result.updatePixels();
 }
 
-void hue() {
+void hueImage() {
+  for (int i = 0; i < img.width * img.height; ++i) {
+    if (hue(img.pixels[i]) < minHueValue*255 ||  hue(img.pixels[i]) > maxHueValue*255) { //deux Hbar car il doit etre compris entre deux trucs!
+      resultHue.pixels[i] = 0;
+    } else {
+      resultHue.pixels[i] = img.pixels[i];
+    }
+  }
+  resultHue.updatePixels();
 }
+
 
 PImage sobel(PImage img) {
   float[][] hKernel = { { 0, 1, 0 }, 
@@ -66,16 +91,16 @@ PImage sobel(PImage img) {
   // *************************************
   float sum_h = 0.f;
   float sum_v = 0.f;
-  for( int y = 0; y < img.height; y++){
-    for(int x = 0; x < img.width; x++){
-      for( int range = -1 ; range <= 1; range++){
+  for ( int y = 0; y < img.height; y++) {
+    for (int x = 0; x < img.width; x++) {
+      for ( int range = -1; range <= 1; range++) {
         int pX = x+range;
         int pY = y+range;
       }
     }
   }
-  
-  
+
+
   for (int y = 2; y < img.height - 2; y++) { // Skip top and bottom edges
     for (int x = 2; x < img.width - 2; x++) { // Skip left and right
       if (buffer[y * img.width + x] > (int)(max * 0.3f)) { // 30% of the max
@@ -88,9 +113,9 @@ PImage sobel(PImage img) {
   return result;
 }
 
-float convolution(float x, float y){
+float convolution(float x, float y) {
   float result = 0.f;
-  
-  
+
+
   return result;
 }
