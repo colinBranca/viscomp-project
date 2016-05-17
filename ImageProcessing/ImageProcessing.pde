@@ -9,6 +9,10 @@ float thresholdValue = 0;
 float minHueValue = 0;
 float maxHueValue = 0;
 
+float[][]gaussian = {{9, 12, 9},
+  {12, 15, 12},
+  {9, 12, 9}};
+
 void settings() {
   size(1600, 1200);
 }
@@ -20,8 +24,8 @@ void setup() {
   maxHueBar = new HScrollbar(width/2, height/2 + 60, width/2, 20);
   //noLoop();
   // no interactive behaviour: draw() will be called only once.
-  result = createImage(width/2, height/2, RGB);
-  resultHue = createImage(width/2, height/2, RGB);
+  result = createImage(width/2, height/2, ALPHA);
+  resultHue = createImage(width/2, height/2, ALPHA);
 }
 
 void draw() {
@@ -35,8 +39,9 @@ void draw() {
     maxHueValue = maxHueBar.getPos();
     hueImage();
   }
-
-  PImage resultSobel = sobel(img);
+  
+  PImage resultGauss = convolute(img, gaussian);
+  PImage resultSobel = sobel(resultGauss);
 
   background(0, 0, 0);
   image(img, 0, 0);
@@ -52,7 +57,7 @@ void draw() {
   maxHueBar.display();
   maxHueBar.update();
 
-  hough(sobel(img));
+  hough(resultSobel);
   image(houghImg, 0, 0);
 }
 
@@ -140,6 +145,31 @@ PImage sobel(PImage img) {
   return resultSob;
 }
 
+PImage convolute(PImage img, float[][]kernel){
+  loadPixels();
+  PImage convolution = createImage(img.width, img.height, ALPHA);
+  
+  for(int x=0; x<img.width; x++){
+    for(int y=0; y<img.width; y++){
+      float r = 0.0;
+      float g = 0.0;
+      float b = 0.0;
+      float w = 0.0;
+      for(int i=0; i<kernel.length; i++){
+        for(int j=0; j<kernel[i].length; j++){
+          r+=red(img.get(x+i-(kernel.length/2), y+j-(kernel.length/2)))*kernel[i][j];
+          g+=green(img.get(x+i-(kernel.length/2), y+j-(kernel.length/2)))*kernel[i][j];
+          b+=blue(img.get(x+i-(kernel.length/2), y+j-(kernel.length/2)))*kernel[i][j];
+          w+=kernel[i][j];
+        }
+      }
+      convolution.set(x, y, color(r/w, g/w, b/w));
+    }
+  }
+  convolution.updatePixels();
+  return convolution;
+}
+
 void hough(PImage edgeImg) {
   float discretizationStepsPhi = 0.06f;
   float discretizationStepsR = 2.5f;
@@ -166,7 +196,7 @@ void hough(PImage edgeImg) {
           float phi = p*discretizationStepsPhi;
           float r = (float)(x*Math.cos(phi) + (edgeImg.height-y)*Math.sin(phi));
 
-          accumulator[(int)phi * (rDim+2) + (int)(r/discretizationStepsR) + (rDim-1)/2]++;
+          accumulator[(rDim+2) + (int)phi*(rDim+2) + 1 + (int)Math.round(r/discretizationStepsR) + (rDim-1)/2]++;
         }
       }
     }
