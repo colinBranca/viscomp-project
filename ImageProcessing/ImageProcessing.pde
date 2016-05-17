@@ -1,3 +1,6 @@
+import processing.video.*;
+Capture cam;
+
 PImage img;
 PImage result;
 PImage resultHue;
@@ -9,8 +12,9 @@ float thresholdValue = 0;
 float minHueValue = 0;
 float maxHueValue = 0;
 
-float[][]gaussian = {{9, 12, 9},
-  {12, 15, 12},
+
+float[][]gaussian = {{9, 12, 9}, 
+  {12, 15, 12}, 
   {9, 12, 9}};
 
 void settings() {
@@ -18,6 +22,21 @@ void settings() {
 }
 
 void setup() {
+
+  //Webcam
+  String[] cameras = Capture.list();
+  if (cameras.length == 0) {
+    println("There are no cameras available for capture.");
+    exit();
+  } else {
+    println("Available cameras:");
+    for (int i = 0; i < cameras.length; i++) {
+      println(cameras[i]);
+    }
+    cam = new Capture(this, cameras[0]);
+    cam.start();
+  }
+
   img = loadImage("board1.jpg");
   thresholdBar = new HScrollbar(0, height/2 + 40, width/2, 20);
   minHueBar = new HScrollbar(width/2, height/2 + 20, width/2, 20);
@@ -39,7 +58,12 @@ void draw() {
     maxHueValue = maxHueBar.getPos();
     hueImage();
   }
-  
+
+  if (cam.available() == true) {
+    cam.read();
+  }
+  img = cam.get();
+
   PImage resultGauss = convolute(img, gaussian);
   PImage resultSobel = sobel(resultGauss);
 
@@ -145,18 +169,18 @@ PImage sobel(PImage img) {
   return resultSob;
 }
 
-PImage convolute(PImage img, float[][]kernel){
+PImage convolute(PImage img, float[][]kernel) {
   loadPixels();
   PImage convolution = createImage(img.width, img.height, ALPHA);
-  
-  for(int x=0; x<img.width; x++){
-    for(int y=0; y<img.width; y++){
+
+  for (int x=0; x<img.width; x++) {
+    for (int y=0; y<img.width; y++) {
       float r = 0.0;
       float g = 0.0;
       float b = 0.0;
       float w = 0.0;
-      for(int i=0; i<kernel.length; i++){
-        for(int j=0; j<kernel[i].length; j++){
+      for (int i=0; i<kernel.length; i++) {
+        for (int j=0; j<kernel[i].length; j++) {
           r+=red(img.get(x+i-(kernel.length/2), y+j-(kernel.length/2)))*kernel[i][j];
           g+=green(img.get(x+i-(kernel.length/2), y+j-(kernel.length/2)))*kernel[i][j];
           b+=blue(img.get(x+i-(kernel.length/2), y+j-(kernel.length/2)))*kernel[i][j];
