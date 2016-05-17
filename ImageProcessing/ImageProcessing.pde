@@ -1,6 +1,7 @@
 PImage img;
 PImage result;
 PImage resultHue;
+PImage houghImg;
 HScrollbar thresholdBar;
 HScrollbar minHueBar;
 HScrollbar maxHueBar;
@@ -51,8 +52,8 @@ void draw() {
   maxHueBar.display();
   maxHueBar.update();
   */
-  
   hough(sobel(img));
+  image(houghImg,0,0);
 }
 
 void generateResult() {
@@ -161,18 +162,18 @@ void hough(PImage edgeImg) {
         // accumulator, and increment accordingly the accumulator.
         // Be careful: r may be negative, so you may want to center onto
         // the accumulator with something like: r += (rDim - 1) / 2
-        double phi = Math.atan((edgeImg.height-y)/x);
-        double r = (rDim - 1) / 2 + x*Math.cos(phi) + (edgeImg.height-y)*Math.sin(phi);
-        accumulator[(int)(phi*r)] = edgeImg.pixels[y * edgeImg.width + x];
+        int phi = (int) Math.atan((edgeImg.height-y)/x);
+        int r = (int)((rDim - 1) / 2 + x*Math.cos(phi) + (edgeImg.height-y)*Math.sin(phi));
+        accumulator[(phi*r)] = edgeImg.pixels[y * edgeImg.width + x];
       }
     }
   }
   
-  PImage houghImg = createImage(rDim + 2, phiDim + 2, ALPHA);
+  houghImg = createImage(rDim + 2, phiDim + 2, ALPHA);
   for (int i = 0; i < accumulator.length; i++) {
     houghImg.pixels[i] = color(min(255, accumulator[i]));
   }
   // You may want to resize the accumulator to make it easier to see:
-  // houghImg.resize(400, 400);
+  houghImg.resize(400, 400);
   houghImg.updatePixels();
 }
