@@ -67,7 +67,7 @@ void generateResult() {
 
 void hueImage() {
   for (int i = 0; i < img.width * img.height; ++i) {
-    if (hue(img.pixels[i]) < minHueValue*255 ||  hue(img.pixels[i]) > maxHueValue*255) { //deux Hbar car il doit etre compris entre deux trucs!
+    if (hue(img.pixels[i]) < minHueValue*255 ||  hue(img.pixels[i]) > maxHueValue*255) {
       resultHue.pixels[i] = 0;
     } else {
       resultHue.pixels[i] = img.pixels[i];
@@ -85,10 +85,10 @@ PImage sobel(PImage img) {
     { 0, 0, 0 } };
   loadPixels();
 
-  PImage result = createImage(img.width, img.height, ALPHA);
+  PImage resultSob = createImage(img.width, img.height, ALPHA);
   // clear the image
   for (int i = 0; i < img.width * img.height; i++) {
-    result.pixels[i] = color(0);
+    resultSob.pixels[i] = color(0);
   }
   float max=0.f;
   float[] buffer = new float[img.width * img.height];
@@ -122,14 +122,19 @@ PImage sobel(PImage img) {
   for (int y = 2; y < img.height - 2; y++) { // Skip top and bottom edges
     for (int x = 2; x < img.width - 2; x++) { // Skip left and right
       if (buffer[y * img.width + x] > (int)(max * 0.3f)) { // 30% of the max
-        result.pixels[y * img.width + x] = color(255);
+        resultSob.pixels[y * img.width + x] = color(255);
       } else {
-        result.pixels[y * img.width + x] = color(0);
+        resultSob.pixels[y * img.width + x] = color(0);
       }
     }
   }
-  updatePixels();
-  return result;
+  for (int i = 0; i < img.width * img.height; ++i) {
+    if (hue(img.pixels[i]) < minHueValue*255 ||  hue(img.pixels[i]) > maxHueValue*255) {
+      resultSob.pixels[i] = 0;
+    }
+  }
+  resultSob.updatePixels();
+  return resultSob;
 }
 
 /*float convolution(PImage img, float[][]k, int x, int y) {
