@@ -103,7 +103,7 @@ PImage sobel(PImage img) {
       sum_v = sum_v + convolution(img, vKernel, x, y);
       float sum = (float)sqrt(pow(sum_h, 2) + pow(sum_v, 2));
       
-      buffer[x*img.width + y]=sum;
+      buffer[y*img.width + x]=sum;
       if(max<sum){
         max=sum;
       }
