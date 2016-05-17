@@ -1,6 +1,7 @@
 PImage img;
 PImage result;
 PImage resultHue;
+PImage resultSobel;
 HScrollbar thresholdBar;
 HScrollbar minHueBar;
 HScrollbar maxHueBar;
@@ -21,6 +22,7 @@ void setup() {
   // no interactive behaviour: draw() will be called only once.
   result = createImage(width/2, height/2, RGB);
   resultHue = createImage(width/2, height/2, RGB);
+  resultSobel = createImage(width/2, height/2, RGB);
 }
 
 void draw() {
@@ -34,10 +36,13 @@ void draw() {
     maxHueValue = maxHueBar.getPos();
     hueImage();
   }
+  
+  sobel(img);
 
   background(0, 0, 0);
-  image(img, width/4, 0);
-  image(result, 0, height/2); //ce n'est pas le bon result
+  image(img, 0, 0);
+  image(resultSobel, width/2, height/2);
+  image(result, 0, height/2); 
   image(resultHue, width/2, height/2);
 
   thresholdBar.display();
@@ -115,7 +120,7 @@ PImage sobel(PImage img) {
       }
     }
   }
-  return result;
+  return resultSobel;
 }
 
 float convolution(PImage img, float[][]k, int x, int y){
