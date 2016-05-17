@@ -1,7 +1,6 @@
 PImage img;
 PImage result;
 PImage resultHue;
-PImage resultSobel;
 HScrollbar thresholdBar;
 HScrollbar minHueBar;
 HScrollbar maxHueBar;
@@ -22,11 +21,10 @@ void setup() {
   // no interactive behaviour: draw() will be called only once.
   result = createImage(width/2, height/2, RGB);
   resultHue = createImage(width/2, height/2, RGB);
-  //resultSobel = createImage(width/2, height/2, RGB);
 }
 
 void draw() {
-  if (thresholdBar.getPos() != thresholdValue) {
+  /*if (thresholdBar.getPos() != thresholdValue) {
     thresholdValue = thresholdBar.getPos();
     generateResult();
   }
@@ -45,12 +43,16 @@ void draw() {
   image(result, 0, height/2); 
   image(resultHue, width/2, height/2);
 
+
   thresholdBar.display();
   thresholdBar.update();
   minHueBar.display();
   minHueBar.update();
   maxHueBar.display();
   maxHueBar.update();
+  */
+  
+  hough(sobel(img));
 }
 
 void generateResult() {
@@ -137,18 +139,40 @@ PImage sobel(PImage img) {
   return resultSob;
 }
 
-/*float convolution(PImage img, float[][]k, int x, int y) {
-  float result = 0.f;
+void hough(PImage edgeImg) {
+  float discretizationStepsPhi = 0.06f;
+  float discretizationStepsR = 2.5f;
 
-  for (int i=-1; i<=1; i++) {
-    for (int j=-1; j<=1; j++) {
-      int px = x+i;
-      int py = y+i;
-      if (!(px<0 || py<0 || px>=img.width || py>=img.height)) {
-        result = result + (k[i+1][j+1]*img.pixels[img.width*py + px]);
+  // dimensions of the accumulator
+  int phiDim = (int) (Math.PI / discretizationStepsPhi);
+  int rDim = (int) (((edgeImg.width + edgeImg.height) * 2 + 1) / discretizationStepsR);
+
+  // our accumulator (with a 1 pix margin around)
+  int[] accumulator = new int[(phiDim + 2) * (rDim + 2)];
+  // Fill the accumulator: on edge points (ie, white pixels of the edge
+  // image), store all possible (r, phi) pairs describing lines going
+  // through the point.
+  for (int y = 0; y < edgeImg.height; y++) {
+    for (int x = 0; x < edgeImg.width; x++) {
+      // Are we on an edge?
+      if (brightness(edgeImg.pixels[y * edgeImg.width + x]) != 0) {
+        // ...determine here all the lines (r, phi) passing through
+        // pixel (x,y), convert (r,phi) to coordinates in the
+        // accumulator, and increment accordingly the accumulator.
+        // Be careful: r may be negative, so you may want to center onto
+        // the accumulator with something like: r += (rDim - 1) / 2
+        double phi = Math.atan((edgeImg.height-y)/x);
+        double r = (rDim - 1) / 2 + x*Math.cos(phi) + (edgeImg.height-y)*Math.sin(phi);
+        accumulator[(int)(phi*r)] = edgeImg.pixels[y * edgeImg.width + x];
       }
     }
   }
-
-  return result;
-}*/
+  
+  PImage houghImg = createImage(rDim + 2, phiDim + 2, ALPHA);
+  for (int i = 0; i < accumulator.length; i++) {
+    houghImg.pixels[i] = color(min(255, accumulator[i]));
+  }
+  // You may want to resize the accumulator to make it easier to see:
+  // houghImg.resize(400, 400);
+  houghImg.updatePixels();
+}
