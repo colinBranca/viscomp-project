@@ -2,6 +2,7 @@ import processing.video.*;
 Capture cam;
 
 PImage img;
+PImage camImg;
 PImage result;
 PImage resultHue;
 PImage houghImg;
@@ -18,7 +19,7 @@ float[][]gaussian = {{9, 12, 9},
   {9, 12, 9}};
 
 void settings() {
-  size(1600, 1200);
+  size(1600, 1000);
 }
 
 void setup() {
@@ -36,8 +37,7 @@ void setup() {
     cam = new Capture(this, cameras[0]);
     cam.start();
   }
-
-  img = loadImage("board1.jpg");
+  /* for older week
   thresholdBar = new HScrollbar(0, height/2 + 40, width/2, 20);
   minHueBar = new HScrollbar(width/2, height/2 + 20, width/2, 20);
   maxHueBar = new HScrollbar(width/2, height/2 + 60, width/2, 20);
@@ -45,9 +45,11 @@ void setup() {
   // no interactive behaviour: draw() will be called only once.
   result = createImage(width/2, height/2, ALPHA);
   resultHue = createImage(width/2, height/2, ALPHA);
+  */
 }
 
 void draw() {
+  /*for older week
   if (thresholdBar.getPos() != thresholdValue) {
     thresholdValue = thresholdBar.getPos();
     generateResult();
@@ -58,18 +60,23 @@ void draw() {
     maxHueValue = maxHueBar.getPos();
     hueImage();
   }
+  */
 
   if (cam.available() == true) {
     cam.read();
   }
-  img = cam.get();
+  //img = cam.get();
+  img = loadImage("board1.jpg");
 
   PImage resultGauss = convolute(img, gaussian);
   PImage resultSobel = sobel(resultGauss);
+  
 
-  background(0, 0, 0);
+  background(100, 100, 100);
   image(img, 0, 0);
-  image(resultSobel, width/2, 0);
+  hough(resultSobel);
+  
+  /*
   image(result, 0, height/2); 
   image(resultHue, width/2, height/2);
 
@@ -80,9 +87,7 @@ void draw() {
   minHueBar.update();
   maxHueBar.display();
   maxHueBar.update();
-
-  hough(resultSobel);
-  image(houghImg, 0, 0);
+  */
 }
 
 void generateResult() {
@@ -140,31 +145,25 @@ PImage sobel(PImage img) {
           sum_v = sum_v + vKernel[i][j]*img.get(x-1+i, y-1+j); //convolution(img, vKernel, x, y);
         }
       }
-
-      float sum = (float)sqrt(pow(sum_h, 2) + pow(sum_v, 2));
+      if(max < sum_h) {
+        max = sum_h;
+      }
+      if(max < sum_v) {
+        max = sum_v;
+      }
+      
+      float sum = sqrt(pow(sum_h, 2) + pow(sum_v, 2));
 
       buffer[y*img.width + x]=sum;
-      if (max<sum) {
-        max=sum;
-      }
-    }
-  }
-
-  //Store in the result
-  for (int y = 2; y < img.height - 2; y++) { // Skip top and bottom edges
-    for (int x = 2; x < img.width - 2; x++) { // Skip left and right
-      if (buffer[y * img.width + x] > (int)(max * 0.3f)) { // 30% of the max
-        resultSob.pixels[y * img.width + x] = color(255);
+      
+      if (buffer[y * img.width + x] > (int)(max * 0.3f)) {
+        resultSob.pixels[y * img.width + x] = 255;
       } else {
-        resultSob.pixels[y * img.width + x] = color(0);
+        resultSob.pixels[y * img.width + x] = 0;
       }
     }
   }
-  for (int i = 0; i < img.width * img.height; ++i) {
-    if (hue(img.pixels[i]) < minHueValue*255 ||  hue(img.pixels[i]) > maxHueValue*255) {
-      resultSob.pixels[i] = 0;
-    }
-  }
+  
   resultSob.updatePixels();
   return resultSob;
 }
@@ -186,6 +185,9 @@ PImage convolute(PImage img, float[][]kernel) {
           b+=blue(img.get(x+i-(kernel.length/2), y+j-(kernel.length/2)))*kernel[i][j];
           w+=kernel[i][j];
         }
+      }
+      if(w==0) {
+        w = 1.0;
       }
       convolution.set(x, y, color(r/w, g/w, b/w));
     }
@@ -211,16 +213,11 @@ void hough(PImage edgeImg) {
     for (int x = 0; x < edgeImg.width; x++) {
       // Are we on an edge?
       if (brightness(edgeImg.pixels[y * edgeImg.width + x]) != 0) {
-        // ...determine here all the lines (r, phi) passing through
-        // pixel (x,y), convert (r,phi) to coordinates in the
-        // accumulator, and increment accordingly the accumulator.
-        // Be careful: r may be negative, so you may want to center onto
-        // the accumulator with something like: r += (rDim - 1) / 2
         for (int p=0; p<phiDim; p++) {
           float phi = p*discretizationStepsPhi;
-          float r = (float)(x*Math.cos(phi) + (edgeImg.height-y)*Math.sin(phi));
+          float r = (float)(x*cos(phi) + y*sin(phi));
 
-          accumulator[(rDim+2) + (int)phi*(rDim+2) + 1 + (int)Math.round(r/discretizationStepsR) + (rDim-1)/2]++;
+          accumulator[(rDim+2) + p*(rDim+2) + 1 + (int)Math.round(r/discretizationStepsR) + (rDim-1)/2]++;
         }
       }
     }
