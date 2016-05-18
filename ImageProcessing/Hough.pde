@@ -7,11 +7,12 @@ public class Hough {
   ArrayList<PVector> lines; 
 
   Hough(PImage edgeImg, int nLines) {
-    int phiDim = (int) (Math.PI / discretizationStepsPhi);
-    int rDim = (int) (((edgeImg.width + edgeImg.height) * 2 + 1) / discretizationStepsR);
+    phiDim = (int) (Math.PI / discretizationStepsPhi);
+    rDim = (int) (((edgeImg.width + edgeImg.height) * 2 + 1) / discretizationStepsR);
 
     // our accumulator (with a 1 pix margin around)
     accumulator = new int[(phiDim + 2) * (rDim + 2)];
+
     // Fill the accumulator: on edge points (ie, white pixels of the edge
     // image), store all possible (r, phi) pairs describing lines going
     // through the point.
@@ -22,14 +23,27 @@ public class Hough {
           for (int p=0; p<phiDim; p++) {
             //float phi = p*discretizationStepsPhi;
             int r = Math.round(x*cos(p) + y*sin(p));
-
-            accumulator[(rDim+2) + p*(rDim+2) + 1 + r + (rDim-1)/2]++;
+            accumulator[(p+1)*(rDim+2) + r + 1 + (rDim-1)/2]++;
+            //accumulator[(rDim+2) + p*(rDim+2) + 1 + r + (rDim-1)/2]++;
             //Math.round(r/discretizationStepsR)
           }
         }
       }
     }
     lines = bestLines(nLines);
+  }
+  
+  PImage houghImage() {
+    PImage img = createImage(rDim + 2, phiDim + 2, RGB);
+    
+    for (int i = 0; i < (rDim+2)*(phiDim+2); i++) {
+      img.pixels[i] = color(min(255, accumulator[i]));
+    }
+    // You may want to resize the accumulator to make it easier to see:
+    img.resize(400, 400);
+    img.updatePixels();
+    
+    return img;
   }
 
   ArrayList<PVector> bestLines(int n) {
@@ -80,17 +94,5 @@ public class Hough {
       lines.add(new PVector(r, phi));
     }
     return lines;
-  }
-
-  PImage houghImage() {
-    PImage img = createImage(rDim + 2, phiDim + 2, ALPHA);
-    for (int i = 0; i < accumulator.length; i++) {
-      img.pixels[i] = color(min(255, accumulator[i]));
-    }
-    // You may want to resize the accumulator to make it easier to see:
-    img.resize(400, 400);
-    img.updatePixels();
-    
-    return img;
   }
 }

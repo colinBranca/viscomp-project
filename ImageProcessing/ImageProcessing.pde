@@ -7,7 +7,6 @@ PImage img;
 PImage camImg;
 PImage result;
 PImage resultHue;
-PImage houghImg;
 HScrollbar thresholdBar;
 HScrollbar minHueBar;
 HScrollbar maxHueBar;
@@ -27,71 +26,71 @@ void settings() {
 void setup() {
 
   //Webcam
-  String[] cameras = Capture.list();
-  if (cameras.length == 0) {
-    println("There are no cameras available for capture.");
-    exit();
-  } else {
-    println("Available cameras:");
-    for (int i = 0; i < cameras.length; i++) {
-      println(cameras[i]);
-    }
-    cam = new Capture(this, cameras[0]);
-    cam.start();
-  }
-  /* for older week
-   thresholdBar = new HScrollbar(0, height/2 + 40, width/2, 20);
-   minHueBar = new HScrollbar(width/2, height/2 + 20, width/2, 20);
-   maxHueBar = new HScrollbar(width/2, height/2 + 60, width/2, 20);
-   //noLoop();
-   // no interactive behaviour: draw() will be called only once.
-   result = createImage(width/2, height/2, ALPHA);
-   resultHue = createImage(width/2, height/2, ALPHA);
-   */
+  /*String[] cameras = Capture.list();
+   if (cameras.length == 0) {
+   println("There are no cameras available for capture.");
+   exit();
+   } else {
+   println("Available cameras:");
+   for (int i = 0; i < cameras.length; i++) {
+   println(cameras[i]);
+   }
+   cam = new Capture(this, cameras[0]);
+   cam.start();
+   }*/
+  //for older week
+  thresholdBar = new HScrollbar(0, height/2 + 40, width/2, 20);
+  minHueBar = new HScrollbar(width/2, height/2 + 20, width/2, 20);
+  maxHueBar = new HScrollbar(width/2, height/2 + 60, width/2, 20);
+  //noLoop();
+  // no interactive behaviour: draw() will be called only once.
+  result = createImage(width/2, height/2, ALPHA);
+  resultHue = createImage(width/2, height/2, ALPHA);
 }
 
 void draw() {
+    img = loadImage("board1.jpg");
+
   /*for older week
-   if (thresholdBar.getPos() != thresholdValue) {
-   thresholdValue = thresholdBar.getPos();
-   generateResult();
-   }
-   
-   if (minHueBar.getPos() != minHueValue || maxHueBar.getPos() != maxHueValue) {
-   minHueValue = minHueBar.getPos();
-   maxHueValue = maxHueBar.getPos();
-   hueImage();
-   }
-   */
+  if (thresholdBar.getPos() != thresholdValue) {
+    thresholdValue = thresholdBar.getPos();
+    generateResult();
+  }
+
+  if (minHueBar.getPos() != minHueValue || maxHueBar.getPos() != maxHueValue) {
+    minHueValue = minHueBar.getPos();
+    maxHueValue = maxHueBar.getPos();
+    hueImage();
+  }*/
+
 
   /*if (cam.available() == true) {
-    cam.read();
-  }
-  img = cam.get();
-  */
-  img = loadImage("board1.jpg");
+   cam.read();
+   }
+   img = cam.get();*/
+  
+  background(100, 100, 100);
+  
+  image(img, width/2, 0);
 
   PImage resultGauss = convolute(img, gaussian);
   PImage resultSobel = sobel(resultGauss);
-
-
-  background(100, 100, 100);
+  
   hough = new Hough(resultSobel, 10);
   PImage resultHough = hough.houghImage();
   image(resultHough, 0, 0);
 
-  /*
-  image(result, 0, height/2); 
-   image(resultHue, width/2, height/2);
-   
-   
-   thresholdBar.display();
-   thresholdBar.update();
-   minHueBar.display();
-   minHueBar.update();
-   maxHueBar.display();
-   maxHueBar.update();
-   */
+  /*image(result, 0, height/2); 
+  image(resultHue, width/2, height/2);
+
+
+  thresholdBar.display();
+  thresholdBar.update();
+  minHueBar.display();
+  minHueBar.update();
+  maxHueBar.display();
+  maxHueBar.update();
+  */
 }
 
 void generateResult() {
