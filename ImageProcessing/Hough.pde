@@ -1,12 +1,19 @@
 public class Hough {
+  PImage edgeImg;
+  int nLines;
+
   float discretizationStepsPhi = 0.06f;
   float discretizationStepsR = 2.5f;
   int rDim;
   int phiDim;
   int[] accumulator;
-  ArrayList<PVector> lines; 
+  ArrayList<PVector> lines;
+  ArrayList<PVector> intersect;
 
   Hough(PImage edgeImg, int nLines) {
+    this.edgeImg = edgeImg;
+    this.nLines = nLines;
+
     phiDim = (int) (Math.PI / discretizationStepsPhi);
     rDim = (int) (((edgeImg.width + edgeImg.height) * 2 + 1) / discretizationStepsR);
 
@@ -31,18 +38,19 @@ public class Hough {
       }
     }
     lines = bestLines(nLines);
+    intersect = getIntersections(lines);
   }
-  
+
   PImage houghImage() {
     PImage img = createImage(rDim + 2, phiDim + 2, RGB);
-    
+
     for (int i = 0; i < (rDim+2)*(phiDim+2); i++) {
       img.pixels[i] = color(min(255, accumulator[i]));
     }
     // You may want to resize the accumulator to make it easier to see:
     img.resize(400, 400);
     img.updatePixels();
-    
+
     return img;
   }
 
@@ -83,7 +91,9 @@ public class Hough {
         }
       }
     }
+
     Collections.sort(bestCandidates, new HoughComparator(accumulator));
+
     for (int i=0; i<Math.min(n, bestCandidates.size()); i++) {
       int index = bestCandidates.get(i);
       int accPhi = (int) (index / (rDim + 2)) - 1;
