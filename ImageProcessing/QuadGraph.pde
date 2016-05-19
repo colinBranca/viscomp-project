@@ -5,14 +5,18 @@ import java.util.ArrayList;
 
 class QuadGraph {
 
-
+  List<PVector> lines;
+  int width;
+  int height;
   List<int[]> cycles = new ArrayList<int[]>();
   int[][] graph;
 
-    QuadGraph(List<PVector> lines, int width, int height) {
-
+  QuadGraph(List<PVector> lines, int width, int height) {
+    this.lines = lines;
+    this.width = width;
+    this.height = height;
+    
     int n = lines.size();
-
     // The maximum possible number of edges is n * (n - 1)/2
     graph = new int[n * (n - 1)/2][2];
 
@@ -76,7 +80,7 @@ class QuadGraph {
     int n = path[0];
     int x;
     int[] sub = new int[path.length + 1];
-
+    int nombre4 = 0;
     for (int i = 0; i < graph.length; i++)
       for (int y = 0; y <= 1; y++)
         if (graph[i][y] == n)
@@ -92,7 +96,9 @@ class QuadGraph {
             findNewCycles(sub);
           } else if ((path.length == 4) && (x == path[path.length - 1]))
             //  cycle found
-            
+            nombre4++;
+            println(nombre4);
+
           {
             int[] p = normalize(path);
             int[] inv = invert(p);
@@ -102,6 +108,30 @@ class QuadGraph {
             }
           }
         }
+  }
+
+  //Dessine les quads
+  void drawQuad(List<int[]> quads) {
+    for (int []quad : quads) {
+      PVector l1 = lines.get(quad[0]);
+      PVector l2 = lines.get(quad[1]);
+      PVector l3 = lines.get(quad[2]);
+      PVector l4 = lines.get(quad[3]);
+      // (intersection() is a simplified version of the
+      // intersections() method you wrote last week, that simply
+      // return the coordinates of the intersection between 2 lines)
+      PVector c12 = intersection(l1, l2);
+      PVector c23 = intersection(l2, l3);
+      PVector c34 = intersection(l3, l4);
+      PVector c41 = intersection(l4, l1);
+      // Choose a random, semi-transparent colour
+      Random random = new Random();
+      /*fill(color(min(255, random.nextInt(300)), 
+       min(255, random.nextInt(300)), 
+       min(255, random.nextInt(300)), 50));*/
+      fill(255, 0, 0);
+      quad(c12.x, c12.y, c23.x, c23.y, c34.x, c34.y, c41.x, c41.y);
+    }
   }
 
   //  check of both arrays have same lengths and contents

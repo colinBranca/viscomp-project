@@ -87,7 +87,7 @@ PImage saturationFilter(PImage img, int min, int max) {
   return sat;
 }
 
-PImage colorFilter(PImage img, int min, int max) {
+PImage hueImage(PImage img, int min, int max) {
   loadPixels();
   PImage col = createImage(img.width, img.height, RGB);
   for (int i = 0; i < img.width * img.height; i++) {
@@ -113,4 +113,18 @@ PImage binaryFilter(PImage img, int threshold) {
   }
   updatePixels();
   return binary;
+}
+
+PImage brightnessFilter(PImage img, int min, int max) {
+  loadPixels();
+  PImage bright = createImage(img.width, img.height, RGB);
+  for (int i = 0; i < img.width * img.height; i++) {
+    if (brightness(img.pixels[i]) >= min && brightness(img.pixels[i]) <= max) {
+      bright.pixels[i] = img.pixels[i];
+    } else {
+      bright.pixels[i] = color(0);
+    }
+  }
+  updatePixels();
+  return bright;
 }

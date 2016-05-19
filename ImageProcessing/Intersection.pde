@@ -6,10 +6,12 @@ ArrayList<PVector> getIntersections(List<PVector> lines) {
       PVector line2 = lines.get(j);
       // compute the intersection and add it to ’intersections’
       PVector intersect = intersection(line1, line2);
-      intersections.add(intersect);
-      // draw the intersection
-      fill(255, 128, 0);
-      ellipse(intersect.x, intersect.y, 10, 10);
+      if (intersect.x>0 && intersect.x<img.width && intersect.y>0 && intersect.y<img.height) {
+        intersections.add(intersect);
+        // draw the intersection
+        fill(255, 128, 0);
+        ellipse(intersect.x, intersect.y, 10, 10);
+      }
     }
   }
   return intersections;
