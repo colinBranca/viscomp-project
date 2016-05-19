@@ -48,6 +48,7 @@ void setup() {
 
   graph = new QuadGraph(hough.lines, img.width, img.height);
   quads = graph.findCycles();
+  graph.drawQuad();
 
   noLoop();
 }
