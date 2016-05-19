@@ -49,12 +49,5 @@ void setup() {
   graph = new QuadGraph(hough.lines, img.width, img.height);
   quads = graph.findCycles();
 
-  for (int[] quad : quads) {
-    for (int i=0; i<quad.length; i++) {
-
-      print(i + ") " + quad[i]);
-    }
-  }
-
   noLoop();
 }

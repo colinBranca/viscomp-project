@@ -5,17 +5,11 @@ import java.util.ArrayList;
 
 class QuadGraph {
 
-  List<PVector> lines;
-  int width;
-  int height;
   List<int[]> cycles = new ArrayList<int[]>();
   int[][] graph;
 
   QuadGraph(List<PVector> lines, int width, int height) {
-    this.lines = lines;
-    this.width = width;
-    this.height = height;
-    
+
     int n = lines.size();
     // The maximum possible number of edges is n * (n - 1)/2
     graph = new int[n * (n - 1)/2][2];
@@ -58,7 +52,6 @@ class QuadGraph {
   }
 
   List<int[]> findCycles() {
-
     cycles.clear();
     for (int i = 0; i < graph.length; i++) {
       for (int j = 0; j < graph[i].length; j++) {
@@ -70,7 +63,6 @@ class QuadGraph {
       for (int i = 1; i < cy.length; i++) {
         s += "," + cy[i];
       }
-      System.out.println(s);
     }
     return cycles;
   }
@@ -80,34 +72,76 @@ class QuadGraph {
     int n = path[0];
     int x;
     int[] sub = new int[path.length + 1];
-    int nombre4 = 0;
+
     for (int i = 0; i < graph.length; i++)
       for (int y = 0; y <= 1; y++)
-        if (graph[i][y] == n)
+        if (graph[i][y] == n) {
           //  edge refers to our current node
-        {
           x = graph[i][(y + 1) % 2];
-          if (!visited(x, path))
+          if (!visited(x, path)) {
             //  neighbor node not on path yet
-          {
             sub[0] = x;
             System.arraycopy(path, 0, sub, 1, path.length);
             //  explore extended path
             findNewCycles(sub);
-          } else if ((path.length == 4) && (x == path[path.length - 1]))
-            //  cycle found
-            nombre4++;
-            println(nombre4);
-
-          {
+          } else if ((path.length == 4) && (x == path[path.length - 1])) {
+            //cycle found
             int[] p = normalize(path);
             int[] inv = invert(p);
-            if (isNew(p) && isNew(inv))
-            {
+            if (isNew(p) && isNew(inv)) {
               cycles.add(p);
             }
           }
         }
+  }
+  
+  //ENLEVER LES QUADS QUI SONT INCORRECTS
+  int[] correctQuad(List<PVector> lines){
+    
+    float maxArea = 0;
+    int[] maxQuad = null;
+    
+    for(int[] quad : cycles){
+      PVector l1 = lines.get(quad[0]);
+      PVector l2 = lines.get(quad[1]);
+      PVector l3 = lines.get(quad[2]);
+      PVector l4 = lines.get(quad[3]);
+      
+      PVector c12 = intersection(l1, l2);
+      PVector c23 = intersection(l2, l3);
+      PVector c34 = intersection(l3, l4);
+      PVector c41 = intersection(l4, l1);
+      
+      boolean convex = isConvex(c12, c23, c34 ,c41);
+      boolean valid = validArea(c12, c23, c34 ,c41, (float)70000, (float)350000);
+      boolean notFlat = nonFlatQuad(c12, c23, c34 ,c41);
+      
+      //Calcule de l'area
+      float area = areaOfQuad(c12, c23, c34, c41);
+      
+      if(convex && valid && notFlat && area>maxArea){
+        area = maxArea;
+        maxQuad = quad;
+      }
+    }
+    
+    return maxQuad;
+  }
+  
+  //Calcule de l'area
+  float areaOfQuad(PVector c1, PVector c2, PVector c3, PVector c4) {
+    PVector v12= PVector.sub(c1, c2);
+    PVector v23= PVector.sub(c2, c3);
+    PVector v34= PVector.sub(c3, c4);
+    PVector v41= PVector.sub(c4, c1);
+
+    float a1=v12.cross(v23).z;
+    float a2=v23.cross(v34).z;
+    float a3=v34.cross(v41).z;
+    float a4=v41.cross(v12).z;
+
+    float area = Math.abs((a1 + a2 + a3 + a4)/2);
+    return area;
   }
 
   //Dessine les quads
