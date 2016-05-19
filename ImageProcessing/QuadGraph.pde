@@ -9,7 +9,7 @@ class QuadGraph {
   List<int[]> cycles = new ArrayList<int[]>();
   int[][] graph;
 
-  void build(List<PVector> lines, int width, int height) {
+    QuadGraph(List<PVector> lines, int width, int height) {
 
     int n = lines.size();
 
@@ -92,6 +92,7 @@ class QuadGraph {
             findNewCycles(sub);
           } else if ((path.length == 4) && (x == path[path.length - 1]))
             //  cycle found
+            
           {
             int[] p = normalize(path);
             int[] inv = invert(p);

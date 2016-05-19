@@ -14,6 +14,8 @@ PImage resultHough;
 ArrayList<PVector> lines;
 ArrayList<PVector> intersect;
 
+QuadGraph graph;
+
 float[][]gaussian = {{9, 12, 9}, 
   {12, 15, 12}, 
   {9, 12, 9}};
@@ -34,11 +36,13 @@ void setup() {
   resultSobel = sobel(resultBinary);
 
   hough = new Hough(resultSobel, 6);
-  resultHough = hough.houghImage();
+  
+  graph = new QuadGraph(hough.lines, img.width, img.height);
+  graph.findCycles();
 }
 
 void draw() {
-  background(100, 100, 100);
+  resultHough = hough.houghImage();
   image(img, 0, 0);
   image(resultSobel, width/2, 0);
   image(resultHough, 0, height/2);
