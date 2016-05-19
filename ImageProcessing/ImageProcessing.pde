@@ -35,15 +35,16 @@ void setup() {
   resultBinary = binaryFilter(resultGauss, 35);
   resultSobel = sobel(resultBinary);
 
-  hough = new Hough(resultSobel, 6);
   
-  graph = new QuadGraph(hough.lines, img.width, img.height);
-  graph.findCycles();
+  
+//graph = new QuadGraph(hough.lines, img.width, img.height);
+  //graph.findCycles();
 }
 
 void draw() {
-  resultHough = hough.houghImage();
   image(img, 0, 0);
+  hough = new Hough(resultSobel, 6);
+  resultHough = hough.houghImage();
   image(resultSobel, width/2, 0);
   image(resultHough, 0, height/2);
   hough.drawLines();
