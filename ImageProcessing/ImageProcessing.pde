@@ -33,7 +33,7 @@ void setup() {
   resultBinary = binaryFilter(resultGauss, 35);
   resultSobel = sobel(resultBinary);
 
-  hough = new Hough(resultSobel, 10);
+  hough = new Hough(resultSobel, 6);
   resultHough = hough.houghImage();
 }
 
