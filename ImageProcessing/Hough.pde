@@ -63,7 +63,7 @@ public class Hough {
     for (int accR = 0; accR < rDim; accR++) {
       for (int accPhi = 0; accPhi < phiDim; accPhi++) {
         // compute current index in the accumulator
-        int idx = (accPhi + 1) * (rDim + 2) + accR + 1;
+        int idx = (accPhi + 1) * (rDim + 2) + accR + 1 +(rDim-1)/2;
         if (accumulator[idx] > minVotes) {
           boolean bestCandidate=true;
           // iterate over the neighbourhood
@@ -94,24 +94,58 @@ public class Hough {
 
     for (int i=0; i<Math.min(n, bestCandidates.size()); i++) {
       int index = bestCandidates.get(i);
-      int accPhi = (int) (index / (rDim + 2)) - 1;
-      int accR = index - (accPhi + 1) * (rDim + 2) - 1;
-      float r = (accR - (rDim - 1) * 0.5f) * discretizationStepsR;
-      float phi = accPhi * discretizationStepsPhi;
+      //int accPhi = (int) (index / (rDim + 2)) - 1;
+      for (int p=0; p<phiDim; p++) {
+        
+        int accR = index - (p + 1) * (rDim + 2) - 1 - (rDim-1)/2;
+        float r = accR * discretizationStepsR;
+        float phi = p * discretizationStepsPhi;
 
-      lines.add(new PVector(r, phi));
+        lines.add(new PVector(r, phi));
+      }
     }
     return lines;
   }
-  
+
   void drawLines() {
-    for(int i=0; i<lines.size(); i++) {
+    for (int i=0; i<lines.size(); i++) {
       PVector vect = lines.get(i);
       float r = vect.x;
       float phi = vect.y;
-      int x = (int)(r/sin(phi));
-      int y = (int)(r/cos(phi));
-      line(0, 0, x, y);
+
+      int x0 = 0;
+      int y0 = (int) (r / sin(phi));
+      int x1 = (int) (r / cos(phi));
+      int y1 = 0;
+      int x2 = edgeImg.width;
+      int y2 = (int) ((-cos(phi) / sin(phi)) * x2 + (r / sin(phi)));
+      int y3 = edgeImg.height;
+      int x3 = (int) (((r/sin(phi))-y3)*(sin(phi)/cos(phi)));
+
+      // Finally, plot the lines
+      stroke(204, 102, 0);
+      if (y0 > 0 && y0<edgeImg.height) {
+        if (x1 > 0 && x1<edgeImg.width)
+          line(x0, y0, x1, y1);
+        else if (y2 > 0 && y2<edgeImg.height)
+          line(x0, y0, x2, y2);
+        else {
+          if (x3>0 && x3<edgeImg.width)
+            line(x0, y0, x3, y3);
+        }
+      } else {
+        if (x1 > 0 && x1<img.width) {
+          if (y2 > 0 && y2<img.height)
+            line(x1, y1, x2, y2);
+          else {
+            if (x3 > 0 && x3<img.width)
+              line(x1, y1, x3, y3);
+          }
+        } else {
+          if (y2 > 0 && y2<edgeImg.height && x3>0 && x3<edgeImg.width)
+            line(x2, y2, x3, y3);
+        }
+      }
     }
   }
 }

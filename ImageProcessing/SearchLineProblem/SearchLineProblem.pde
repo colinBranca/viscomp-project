@@ -80,13 +80,16 @@ void hough(PImage edgeImg) {
   //PLOT THE LINE
   for (int idx = 0; idx < accumulator.length; idx++) {
     if (accumulator[idx] > 50) {
-      for (int phi=0; phi<phiDim; phi++) {
+      for (int p=0; p<phiDim; p++) {
         // first, compute back the (r, phi) polar coordinates:
         /*int accPhi = (int) (idx / (rDim + 2)) - 1;
          int accR = idx - (accPhi + 1) * (rDim + 2) - 1;
          float r = (accR - (rDim - 1) * 0.5f) * discretizationStepsR;
          float phi = accPhi * discretizationStepsPhi;*/
-        float r = idx - (phi+1)*(rDim+2) - 1 - (rDim-1)/2;
+        float accR = idx - (p+1)*(rDim+2) - 1 - (rDim-1)/2;
+        float r = accR;
+        float phi = p;
+        
         // Cartesian equation of a line: y = ax + b
         // in polar, y = (-cos(phi)/sin(phi))x + (r/sin(phi))
         // => y = 0 : x = r / cos(phi)
