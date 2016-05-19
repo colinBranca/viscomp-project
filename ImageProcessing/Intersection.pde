@@ -24,8 +24,8 @@ PVector intersection(PVector l1, PVector l2) {
   double r1 = l1.x;
   double r2 = l2.x;
 
-  int x = (int)((r2*sin1 - r1*sin2)/d);
-  int y = (int)((-r2*cos1 + r1*cos2)/d);
+  float x = (float)((r2*sin1 - r1*sin2)/d);
+  float y = (float)((-r2*cos1 + r1*cos2)/d);
 
   return new PVector(x, y);
 }

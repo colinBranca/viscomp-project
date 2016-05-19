@@ -8,7 +8,7 @@ public class Hough {
   int phiDim;
   int[] accumulator;
   ArrayList<PVector> lines;
-  ArrayList<PVector> intersect;
+  ArrayList<PVector> intersections;
 
   Hough(PImage edgeImg, int nLines) {
     this.edgeImg = edgeImg;
@@ -28,17 +28,14 @@ public class Hough {
         // Are we on an edge?
         if (brightness(edgeImg.pixels[y * edgeImg.width + x]) != 0) {
           for (int p=0; p<phiDim; p++) {
-            //float phi = p*discretizationStepsPhi;
             int r = Math.round(x*cos(p) + y*sin(p));
             accumulator[(p+1)*(rDim+2) + r + 1 + (rDim-1)/2]++;
-            //accumulator[(rDim+2) + p*(rDim+2) + 1 + r + (rDim-1)/2]++;
-            //Math.round(r/discretizationStepsR)
           }
         }
       }
     }
     lines = bestLines(nLines);
-    intersect = getIntersections(lines);
+    intersections = getIntersections(lines);
   }
 
   PImage houghImage() {
