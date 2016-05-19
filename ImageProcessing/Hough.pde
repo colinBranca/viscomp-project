@@ -28,7 +28,8 @@ public class Hough {
         // Are we on an edge?
         if (brightness(edgeImg.pixels[y * edgeImg.width + x]) != 0) {
           for (int p=0; p<phiDim; p++) {
-            int r = Math.round(x*cos(p) + y*sin(p));
+            float phi = p*discretizationStepsPhi;
+            int r = Math.round((x*cos(phi) + y*sin(phi))/discretizationStepsR);
             accumulator[(p+1)*(rDim+2) + r + 1 + (rDim-1)/2]++;
           }
         }
@@ -101,5 +102,16 @@ public class Hough {
       lines.add(new PVector(r, phi));
     }
     return lines;
+  }
+  
+  void drawLines() {
+    for(int i=0; i<lines.size(); i++) {
+      PVector vect = lines.get(i);
+      float r = vect.x;
+      float phi = vect.y;
+      int x = (int)(r/sin(phi));
+      int y = (int)(r/cos(phi));
+      line(0, 0, x, y);
+    }
   }
 }

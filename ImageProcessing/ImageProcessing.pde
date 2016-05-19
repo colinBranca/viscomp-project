@@ -43,8 +43,9 @@ void setup() {
 
 void draw() {
   resultHough = hough.houghImage();
-  //image(img, 0, 0);
+  image(img, 0, 0);
   image(resultSobel, width/2, 0);
   image(resultHough, 0, height/2);
+  hough.drawLines();
   noLoop();
 }
