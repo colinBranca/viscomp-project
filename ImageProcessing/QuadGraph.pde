@@ -116,7 +116,7 @@ class QuadGraph {
 
       boolean convex = isConvex(c12, c23, c34, c41);
       float area = areaOfQuad(c12, c23, c34, c41);
-      boolean valid = validArea(area, (float)70000, (float)350000);
+      boolean valid = validArea(area, (float)1000, (float)350000);
       boolean notFlat = nonFlatQuad(c12, c23, c34, c41);
 
 
@@ -125,7 +125,7 @@ class QuadGraph {
         maxQuad = quad;
       }
     }
-
+    println(maxQuad[0]);
     return maxQuad;
   }
 

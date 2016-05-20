@@ -29,7 +29,7 @@ void settings() {
 }
 
 void setup() {
-  img = loadImage("board1.jpg");
+  img = loadImage("board4.jpg");
   img.resize(640, 480);
   image(img, 0, 0);
 
