@@ -1,6 +1,4 @@
-import processing.video.*;
 import java.util.*;
-Capture cam;
 Hough hough;
 
 PImage img;
@@ -47,10 +45,10 @@ void setup() {
   image(resultHough, 0, height/2);
   hough.drawLines();
 
-  graph = new QuadGraph(hough.lines, img.width, img.height);
-  quads = graph.findCycles();
-  bestQuad = graph.findMaxQuad(hough.lines);
-  graph.drawQuad(hough.lines);
+  //graph = new QuadGraph(hough.lines, img.width, img.height);
+  //quads = graph.findCycles();
+  //bestQuad = graph.findMaxQuad(hough.lines);
+  //graph.drawQuad(hough.lines);
 
   noLoop();
 }

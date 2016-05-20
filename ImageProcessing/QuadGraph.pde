@@ -125,7 +125,7 @@ class QuadGraph {
         maxQuad = quad;
       }
     }
-    println(maxQuad[0]);
+    //println(maxQuad[0]);
     return maxQuad;
   }
 
