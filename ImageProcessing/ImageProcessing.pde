@@ -1,6 +1,9 @@
 import java.util.*;
 Hough hough;
 
+final int IMAGE_WIDTH = 600;
+final int IMAGE_HEIGHT = 450;
+
 PImage img;
 PImage resultHue;
 PImage resultBrightness;
@@ -23,12 +26,12 @@ float[][]gaussian = {{9, 12, 9},
 
 
 void settings() {
-  size(1600, 1000);
+  size(IMAGE_WIDTH + IMAGE_HEIGHT + IMAGE_WIDTH, IMAGE_HEIGHT * 2);
 }
 
 void setup() {
-  img = loadImage("board4.jpg");
-  img.resize(640, 480);
+  img = loadImage("board1.jpg");
+  img.resize(IMAGE_WIDTH, IMAGE_HEIGHT);
   image(img, 0, 0);
 
   resultHue = hueImage(img, 80, 140);
@@ -40,9 +43,10 @@ void setup() {
 
   hough = new Hough(resultSobel, 6);
   resultHough = hough.houghImage();
+  resultHough.resize(IMAGE_HEIGHT, IMAGE_HEIGHT);
 
-  image(resultSobel, width/2, 0);
-  image(resultHough, 0, height/2);
+  image(resultSobel, IMAGE_WIDTH + IMAGE_HEIGHT, 0);
+  image(resultHough, IMAGE_WIDTH, 0);
   hough.drawLines();
 
   //graph = new QuadGraph(hough.lines, img.width, img.height);
