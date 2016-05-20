@@ -2,26 +2,26 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
+int nbr = 0;
 
 class QuadGraph {
-
   List<int[]> cycles = new ArrayList<int[]>();
   int[][] graph;
+  List<PVector> lines;
 
   QuadGraph(List<PVector> lines, int width, int height) {
-
+    
+    this.lines = lines;
     int n = lines.size();
     // The maximum possible number of edges is n * (n - 1)/2
     graph = new int[n * (n - 1)/2][2];
 
     int idx =0;
-
-    for (int i = 0; i < lines.size(); i++) {
-      for (int j = i + 1; j < lines.size(); j++) {
+    for (int i = 0; i < n; i++) {
+      for (int j = i + 1; j < n; j++) {
         if (intersect(lines.get(i), lines.get(j), width, height)) {
           graph[idx][0] = i;
           graph[idx][1] = j;
-
           idx++;
         }
       }
@@ -33,17 +33,17 @@ class QuadGraph {
    */
   boolean intersect(PVector line1, PVector line2, int width, int height) {
 
-    double sin_t1 = Math.sin(line1.y);
-    double sin_t2 = Math.sin(line2.y);
-    double cos_t1 = Math.cos(line1.y);
-    double cos_t2 = Math.cos(line2.y);
+    double sin1 = Math.sin(line1.y);
+    double sin2 = Math.sin(line2.y);
+    double cos1 = Math.cos(line1.y);
+    double cos2 = Math.cos(line2.y);
     float r1 = line1.x;
     float r2 = line2.x;
 
-    double denom = cos_t2 * sin_t1 - cos_t1 * sin_t2;
+    double d = cos2 * sin1 - cos1 * sin2;
 
-    int x = (int) ((r2 * sin_t1 - r1 * sin_t2) / denom);
-    int y = (int) ((-r2 * cos_t1 + r1 * cos_t2) / denom);
+    int x = (int) ((r2 * sin1 - r1 * sin2) / d);
+    int y = (int) ((-r2 * cos1 + r1 * cos2) / d);
 
     if (0 <= x && 0 <= y && width >= x && height >= y)
       return true;
@@ -53,12 +53,13 @@ class QuadGraph {
 
   List<int[]> findCycles() {
     cycles.clear();
-    for (int i = 0; i < graph.length; i++) {
+    for (int i = 0; i < graph.length/100; i++) {
       for (int j = 0; j < graph[i].length; j++) {
         findNewCycles(new int[] {graph[i][j]});
       }
     }
     for (int[] cy : cycles) {
+      
       String s = "" + cy[0];
       for (int i = 1; i < cy.length; i++) {
         s += "," + cy[i];
@@ -72,9 +73,8 @@ class QuadGraph {
     int n = path[0];
     int x;
     int[] sub = new int[path.length + 1];
-
-    for (int i = 0; i < graph.length; i++)
-      for (int y = 0; y <= 1; y++)
+    for (int i = 0; i < graph.length; i++) {
+      for (int y = 0; y <= 1; y++) {
         if (graph[i][y] == n) {
           //  edge refers to our current node
           x = graph[i][(y + 1) % 2];
@@ -93,41 +93,43 @@ class QuadGraph {
             }
           }
         }
+      }
+    }
   }
-  
+
   //ENLEVER LES QUADS QUI SONT INCORRECTS
-  int[] correctQuad(List<PVector> lines){
-    
+  int[] findMaxQuad(List<PVector> lines) {
+
     float maxArea = 0;
     int[] maxQuad = null;
-    
-    for(int[] quad : cycles){
+
+    for (int[] quad : cycles) {
       PVector l1 = lines.get(quad[0]);
       PVector l2 = lines.get(quad[1]);
       PVector l3 = lines.get(quad[2]);
       PVector l4 = lines.get(quad[3]);
-      
+
       PVector c12 = intersection(l1, l2);
       PVector c23 = intersection(l2, l3);
       PVector c34 = intersection(l3, l4);
       PVector c41 = intersection(l4, l1);
-      
-      boolean convex = isConvex(c12, c23, c34 ,c41);
-      boolean valid = validArea(c12, c23, c34 ,c41, (float)70000, (float)350000);
-      boolean notFlat = nonFlatQuad(c12, c23, c34 ,c41);
-      
+
+      boolean convex = isConvex(c12, c23, c34, c41);
+      boolean valid = validArea(c12, c23, c34, c41, (float)70000, (float)350000);
+      boolean notFlat = nonFlatQuad(c12, c23, c34, c41);
+
       //Calcule de l'area
       float area = areaOfQuad(c12, c23, c34, c41);
-      
-      if(convex && valid && notFlat && area>maxArea){
+
+      if (convex && valid && notFlat && area>maxArea) {
         area = maxArea;
         maxQuad = quad;
       }
     }
-    
+
     return maxQuad;
   }
-  
+
   //Calcule de l'area
   float areaOfQuad(PVector c1, PVector c2, PVector c3, PVector c4) {
     PVector v12= PVector.sub(c1, c2);
@@ -145,8 +147,9 @@ class QuadGraph {
   }
 
   //Dessine les quads
-  void drawQuad() {
-    for (int []quad : quads) {
+  void drawQuad(List<PVector> lines) {
+    //for (int []quad : quads) {
+      int[] quad = findMaxQuad(lines);
       PVector l1 = lines.get(quad[0]);
       PVector l2 = lines.get(quad[1]);
       PVector l3 = lines.get(quad[2]);
@@ -160,12 +163,11 @@ class QuadGraph {
       PVector c41 = intersection(l4, l1);
       // Choose a random, semi-transparent colour
       Random random = new Random();
-      /*fill(color(min(255, random.nextInt(300)), 
-       min(255, random.nextInt(300)), 
-       min(255, random.nextInt(300)), 50));*/
-      fill(255, 0, 0);
+      fill(color(min(255, random.nextInt(300)), 
+        min(255, random.nextInt(300)), 
+        min(255, random.nextInt(300)), 50));
       quad(c12.x, c12.y, c23.x, c23.y, c34.x, c34.y, c41.x, c41.y);
-    }
+    
   }
 
   //  check of both arrays have same lengths and contents

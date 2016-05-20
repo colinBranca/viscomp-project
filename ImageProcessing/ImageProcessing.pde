@@ -17,6 +17,7 @@ ArrayList<PVector> intersect;
 
 QuadGraph graph;
 List<int[]> quads;
+int[] bestQuad;
 
 float[][]gaussian = {{9, 12, 9}, 
   {12, 15, 12}, 
@@ -48,7 +49,8 @@ void setup() {
 
   graph = new QuadGraph(hough.lines, img.width, img.height);
   quads = graph.findCycles();
-  graph.drawQuad();
+  bestQuad = graph.findMaxQuad(hough.lines);
+  graph.drawQuad(hough.lines);
 
   noLoop();
 }
