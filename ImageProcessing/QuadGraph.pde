@@ -8,13 +8,16 @@ class QuadGraph {
   List<int[]> cycles = new ArrayList<int[]>();
   int[][] graph;
   List<PVector> lines;
+  int imgWidth;
+  int imgHeight;
 
   QuadGraph(List<PVector> lines, int width, int height) {
-
     this.lines = lines;
     int n = lines.size();
     // The maximum possible number of edges is n * (n - 1)/2
     graph = new int[n * (n - 1)/2][2];
+    this.imgWidth = width;
+    this.imgHeight = height;
 
     int idx =0;
     for (int i = 0; i < n; i++) {
@@ -26,34 +29,36 @@ class QuadGraph {
         }
       }
     }
+
+    findCycles();
+  }
+
+  PVector intersection(PVector l1, PVector l2) {
+    double sin1 = Math.sin(l1.y);
+    double sin2 = Math.sin(l2.y);
+    double cos1 = Math.cos(l1.y);
+    double cos2 = Math.cos(l2.y);
+    double d = cos2*sin1 - cos1*sin2;
+    double r1 = l1.x;
+    double r2 = l2.x;
+
+    float x = (float)((r2*sin1 - r1*sin2)/d);
+    float y = (float)((-r2*cos1 + r1*cos2)/d);
+
+    return new PVector(x, y);
   }
 
   /** Returns true if polar lines 1 and 2 intersect 
    * inside an area of size (width, height)
    */
   boolean intersect(PVector line1, PVector line2, int width, int height) {
-
-    double sin1 = Math.sin(line1.y);
-    double sin2 = Math.sin(line2.y);
-    double cos1 = Math.cos(line1.y);
-    double cos2 = Math.cos(line2.y);
-    float r1 = line1.x;
-    float r2 = line2.x;
-
-    double d = cos2 * sin1 - cos1 * sin2;
-
-    int x = (int) ((r2 * sin1 - r1 * sin2) / d);
-    int y = (int) ((-r2 * cos1 + r1 * cos2) / d);
-
-    if (0 <= x && 0 <= y && width >= x && height >= y)
-      return true;
-    else
-      return false;
+    PVector p = intersection(line1, line2);
+    return 0 <= p.x && 0 <= p.y && width >= p.x && height >= p.y;
   }
 
   List<int[]> findCycles() {
     cycles.clear();
-    for (int i = 0; i < graph.length/100; i++) {
+    for (int i = 0; i < graph.length; i++) {
       for (int j = 0; j < graph[i].length; j++) {
         findNewCycles(new int[] {graph[i][j]});
       }
@@ -64,7 +69,9 @@ class QuadGraph {
       for (int i = 1; i < cy.length; i++) {
         s += "," + cy[i];
       }
+      println(s);
     }
+
     return cycles;
   }
 
@@ -97,9 +104,7 @@ class QuadGraph {
     }
   }
 
-  //ENLEVER LES QUADS QUI SONT INCORRECTS
-  int[] findMaxQuad(List<PVector> lines) {
-
+  int[] findMaxQuad() {
     float maxArea = 0;
     int[] maxQuad = null;
 
@@ -116,16 +121,15 @@ class QuadGraph {
 
       boolean convex = isConvex(c12, c23, c34, c41);
       float area = areaOfQuad(c12, c23, c34, c41);
-      boolean valid = validArea(area, (float)1000, (float)350000);
+      boolean valid = validArea(area, 1000, 350000);
       boolean notFlat = nonFlatQuad(c12, c23, c34, c41);
 
-
-      if (convex && valid && notFlat && area>maxArea) {
-        area = maxArea;
+      if (convex && valid && notFlat && area > maxArea) {
+        maxArea = area;
         maxQuad = quad;
       }
     }
-    //println(maxQuad[0]);
+
     return maxQuad;
   }
 
@@ -146,26 +150,47 @@ class QuadGraph {
   }
 
   //Dessine les quads
-  void drawQuad(List<PVector> lines) {
-    //for (int []quad : quads) {
-    int[] quad = findMaxQuad(lines);
+  void drawMaxQuad(int x, int y) {
+    int[] quad = findMaxQuad();
+    ArrayList<PVector> quadLines = new ArrayList<PVector>();
+    
+    if(quad == null) {
+      return;
+    }
+
+    quadLines.add(lines.get(quad[0]));
+    quadLines.add(lines.get(quad[1]));
+    quadLines.add(lines.get(quad[2]));
+    quadLines.add(lines.get(quad[3]));
+
+    drawPolarLines(quadLines, imgWidth, imgHeight, x, y);
+
     PVector l1 = lines.get(quad[0]);
     PVector l2 = lines.get(quad[1]);
     PVector l3 = lines.get(quad[2]);
     PVector l4 = lines.get(quad[3]);
+
+    pushMatrix();
+    pushStyle();
+    translate(x, y);
+    fill(204, 102, 0);
+    noStroke();
+
     // (intersection() is a simplified version of the
     // intersections() method you wrote last week, that simply
     // return the coordinates of the intersection between 2 lines)
-    PVector c12 = intersection(l1, l2);
-    PVector c23 = intersection(l2, l3);
-    PVector c34 = intersection(l3, l4);
-    PVector c41 = intersection(l4, l1);
-    // Choose a random, semi-transparent colour
-    Random random = new Random();
-    fill(color(min(255, random.nextInt(300)), 
-      min(255, random.nextInt(300)), 
-      min(255, random.nextInt(300)), 50));
-    quad(c12.x, c12.y, c23.x, c23.y, c34.x, c34.y, c41.x, c41.y);
+    drawIntersection(l1, l2);
+    drawIntersection(l2, l3);
+    drawIntersection(l3, l4);
+    drawIntersection(l4, l1);
+
+    popStyle();
+    popMatrix();
+  }
+
+  void drawIntersection(PVector l1, PVector l2) {
+    PVector in = intersection(l1, l2);
+    ellipse(in.x, in.y, 10, 10);
   }
 
   //  check of both arrays have same lengths and contents
@@ -336,7 +361,6 @@ class QuadGraph {
     }
   }
 
-
   List<PVector> sortCorners(List<PVector> quad) {
 
     // 1 - Sort corners so that they are ordered clockwise
@@ -362,5 +386,21 @@ class QuadGraph {
 
 
     return quad;
+  }
+}
+
+class CWComparator implements Comparator<PVector> {
+
+  PVector center;
+
+  public CWComparator(PVector center) {
+    this.center = center;
+  }
+
+  @Override
+    public int compare(PVector b, PVector d) {
+    if (Math.atan2(b.y-center.y, b.x-center.x)<Math.atan2(d.y-center.y, d.x-center.x))      
+      return -1; 
+    else return 1;
   }
 }

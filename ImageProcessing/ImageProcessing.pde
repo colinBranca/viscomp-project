@@ -20,39 +20,40 @@ QuadGraph graph;
 List<int[]> quads;
 int[] bestQuad;
 
-float[][]gaussian = {{9, 12, 9}, 
+float[][]gaussian = {
+  {9, 12, 9}, 
   {12, 15, 12}, 
-  {9, 12, 9}};
+  {9, 12, 9}
+};
 
 
 void settings() {
-  size(IMAGE_WIDTH + IMAGE_HEIGHT + IMAGE_WIDTH, IMAGE_HEIGHT * 2);
+  size(IMAGE_WIDTH + IMAGE_HEIGHT + IMAGE_WIDTH, IMAGE_HEIGHT);
 }
 
 void setup() {
-  img = loadImage("board1.jpg");
+  img = loadImage("board2.jpg");
   img.resize(IMAGE_WIDTH, IMAGE_HEIGHT);
   image(img, 0, 0);
 
   resultHue = hueImage(img, 80, 140);
-  resultBrightness = brightnessFilter(resultHue, 30, 170);
+  resultBrightness = brightnessFilter(hueImage(img, 80, 140), 30, 170);
   resultSaturation = saturationFilter(resultBrightness, 75, 255);
   resultGauss = convolute(resultSaturation, gaussian);
   resultBinary = binaryFilter(resultGauss, 35);
   resultSobel = sobel(resultBinary);
+  image(resultSobel, IMAGE_WIDTH + IMAGE_HEIGHT, 0);;
 
   hough = new Hough(resultSobel, 6);
-  resultHough = hough.houghImage();
+  resultHough = hough.getHoughImage();
   resultHough.resize(IMAGE_HEIGHT, IMAGE_HEIGHT);
-
-  image(resultSobel, IMAGE_WIDTH + IMAGE_HEIGHT, 0);
   image(resultHough, IMAGE_WIDTH, 0);
-  hough.drawLines();
-
-  //graph = new QuadGraph(hough.lines, img.width, img.height);
-  //quads = graph.findCycles();
-  //bestQuad = graph.findMaxQuad(hough.lines);
-  //graph.drawQuad(hough.lines);
+  
+  //image(img, 0, IMAGE_HEIGHT);
+  //hough.drawBestLines(0, IMAGE_HEIGHT);
+  
+  graph = new QuadGraph(hough.lines, img.width, img.height);
+  graph.drawMaxQuad(0, 0);
 
   noLoop();
 }

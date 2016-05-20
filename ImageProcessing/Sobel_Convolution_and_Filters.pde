@@ -1,10 +1,16 @@
 PImage sobel(PImage img) {
-  float[][] hKernel = { { 0, 1, 0 }, 
+  float[][] hKernel = {
+    { 0, 1, 0 }, 
     { 0, 0, 0 }, 
-    { 0, -1, 0 } };
-  float[][] vKernel = { { 0, 0, 0 }, 
+    { 0, -1, 0 }
+  };
+
+  float[][] vKernel = { 
+    { 0, 0, 0 }, 
     { 1, 0, -1 }, 
-    { 0, 0, 0 } };
+    { 0, 0, 0 }
+  };
+
   loadPixels();
 
   PImage resultSob = createImage(img.width, img.height, ALPHA);
@@ -16,8 +22,8 @@ PImage sobel(PImage img) {
   float[] buffer = new float[img.width * img.height];
 
   //Convolution
-  for ( int x = 0; x < img.width; x++) {
-    for (int y = 0; y < img.height; y++) {
+  for ( int x = 1; x < img.width - 1; x++) {
+    for (int y = 1; y < img.height - 1; y++) {
       float sum_h = 0.f;
       float sum_v = 0.f;
 
