@@ -10,7 +10,7 @@ class QuadGraph {
   List<PVector> lines;
 
   QuadGraph(List<PVector> lines, int width, int height) {
-    
+
     this.lines = lines;
     int n = lines.size();
     // The maximum possible number of edges is n * (n - 1)/2
@@ -59,7 +59,7 @@ class QuadGraph {
       }
     }
     for (int[] cy : cycles) {
-      
+
       String s = "" + cy[0];
       for (int i = 1; i < cy.length; i++) {
         s += "," + cy[i];
@@ -115,11 +115,10 @@ class QuadGraph {
       PVector c41 = intersection(l4, l1);
 
       boolean convex = isConvex(c12, c23, c34, c41);
-      boolean valid = validArea(c12, c23, c34, c41, (float)70000, (float)350000);
+      float area = areaOfQuad(c12, c23, c34, c41);
+      boolean valid = validArea(area, (float)70000, (float)350000);
       boolean notFlat = nonFlatQuad(c12, c23, c34, c41);
 
-      //Calcule de l'area
-      float area = areaOfQuad(c12, c23, c34, c41);
 
       if (convex && valid && notFlat && area>maxArea) {
         area = maxArea;
@@ -149,25 +148,24 @@ class QuadGraph {
   //Dessine les quads
   void drawQuad(List<PVector> lines) {
     //for (int []quad : quads) {
-      int[] quad = findMaxQuad(lines);
-      PVector l1 = lines.get(quad[0]);
-      PVector l2 = lines.get(quad[1]);
-      PVector l3 = lines.get(quad[2]);
-      PVector l4 = lines.get(quad[3]);
-      // (intersection() is a simplified version of the
-      // intersections() method you wrote last week, that simply
-      // return the coordinates of the intersection between 2 lines)
-      PVector c12 = intersection(l1, l2);
-      PVector c23 = intersection(l2, l3);
-      PVector c34 = intersection(l3, l4);
-      PVector c41 = intersection(l4, l1);
-      // Choose a random, semi-transparent colour
-      Random random = new Random();
-      fill(color(min(255, random.nextInt(300)), 
-        min(255, random.nextInt(300)), 
-        min(255, random.nextInt(300)), 50));
-      quad(c12.x, c12.y, c23.x, c23.y, c34.x, c34.y, c41.x, c41.y);
-    
+    int[] quad = findMaxQuad(lines);
+    PVector l1 = lines.get(quad[0]);
+    PVector l2 = lines.get(quad[1]);
+    PVector l3 = lines.get(quad[2]);
+    PVector l4 = lines.get(quad[3]);
+    // (intersection() is a simplified version of the
+    // intersections() method you wrote last week, that simply
+    // return the coordinates of the intersection between 2 lines)
+    PVector c12 = intersection(l1, l2);
+    PVector c23 = intersection(l2, l3);
+    PVector c34 = intersection(l3, l4);
+    PVector c41 = intersection(l4, l1);
+    // Choose a random, semi-transparent colour
+    Random random = new Random();
+    fill(color(min(255, random.nextInt(300)), 
+      min(255, random.nextInt(300)), 
+      min(255, random.nextInt(300)), 50));
+    quad(c12.x, c12.y, c23.x, c23.y, c34.x, c34.y, c41.x, c41.y);
   }
 
   //  check of both arrays have same lengths and contents
@@ -304,26 +302,11 @@ class QuadGraph {
 
   /** Compute the area of a quad, and check it lays within a specific range
    */
-  boolean validArea(PVector c1, PVector c2, PVector c3, PVector c4, float max_area, float min_area) {
+  boolean validArea(float area, float min_area, float max_area) {
 
-    PVector v21= PVector.sub(c1, c2);
-    PVector v32= PVector.sub(c2, c3);
-    PVector v43= PVector.sub(c3, c4);
-    PVector v14= PVector.sub(c4, c1);
-
-    float i1=v21.cross(v32).z;
-    float i2=v32.cross(v43).z;
-    float i3=v43.cross(v14).z;
-    float i4=v14.cross(v21).z;
-
-    float area = Math.abs(0.5f * (i1 + i2 + i3 + i4));
-
-    //System.out.println(area);
-
+    System.out.println(area);
     boolean valid = (area < max_area && area > min_area);
-
     if (!valid) System.out.println("Area out of range");
-
     return valid;
   }
 
