@@ -1,8 +1,11 @@
 import java.util.*;
+import processing.video.*;
 Hough hough;
 
-final int IMAGE_WIDTH = 600;
-final int IMAGE_HEIGHT = 450;
+Capture cam;
+
+final int IMAGE_WIDTH = 640;
+final int IMAGE_HEIGHT = 360;
 
 PImage img;
 PImage resultHue;
@@ -32,28 +35,41 @@ void settings() {
 }
 
 void setup() {
-  img = loadImage("board2.jpg");
+  String[] cameras = Capture.list();
+  if (cameras.length == 0) {
+    println("There are no cameras available for capture.");
+    exit();
+  } else {
+    println("Available cameras:");
+    for (int i = 0; i < cameras.length; i++) {
+      println(cameras[i]);
+    }
+    cam = new Capture(this, 640, 360, 30);
+    cam.start();
+  }
+}
+
+void draw() {
+  if (cam.available() == true) {
+    cam.read();
+  }
+  img = cam.get();
   img.resize(IMAGE_WIDTH, IMAGE_HEIGHT);
   image(img, 0, 0);
 
-  resultHue = hueImage(img, 80, 140);
-  resultBrightness = brightnessFilter(hueImage(img, 80, 140), 30, 170);
-  resultSaturation = saturationFilter(resultBrightness, 75, 255);
+  resultHue = hueImage(img, 80, 110);
+  resultBrightness = brightnessFilter(resultHue, 100, 255);
+  resultSaturation = saturationFilter(resultBrightness, 60, 255);
   resultGauss = convolute(resultSaturation, gaussian);
   resultBinary = binaryFilter(resultGauss, 35);
   resultSobel = sobel(resultBinary);
-  image(resultSobel, IMAGE_WIDTH + IMAGE_HEIGHT, 0);;
-
+  image(resultSobel, IMAGE_WIDTH + IMAGE_HEIGHT, 0);
+  
   hough = new Hough(resultSobel, 6);
   resultHough = hough.getHoughImage();
   resultHough.resize(IMAGE_HEIGHT, IMAGE_HEIGHT);
   image(resultHough, IMAGE_WIDTH, 0);
-  
-  //image(img, 0, IMAGE_HEIGHT);
-  //hough.drawBestLines(0, IMAGE_HEIGHT);
-  
+
   graph = new QuadGraph(hough.lines, img.width, img.height);
   graph.drawMaxQuad(0, 0);
-
-  noLoop();
 }
