@@ -1,4 +1,5 @@
 Environment env = new Environment();
+Mode world;
 
 void settings() {
   fullScreen(P3D);
@@ -7,11 +8,8 @@ void settings() {
 void setup() {
   noStroke();
 
-  // Set default mode
-  env.switchMode(DEFAULT_MODE);
-
   // Create plate
-  env.plate = new ShapePlate(width/2, width/70, width/2);
+  env.plate = new ShapePlate(width/3, width/70, width/3);
   env.plate.fill(color(150, 150, 150, 120));
   env.plate.rotSpeed = new BoundedFloat(50, 1, 100);
   env.plate.rotX = new BoundedFloat(0, - PI / 3, PI / 3);
@@ -20,29 +18,43 @@ void setup() {
   // Create ball
   env.plate.ball = new ShapeBall(20, env.plate);
   env.plate.ball.fill(255, 180, 255);
+
+  env.score = new Score(env);
+
+  env.chartZoom = new BoundedFloat(6, 1, 11);
+
+  world = new ModeWorld(env, width, height, 0, 0);
 }
 
 void draw() {
-  env.mode.update(env);
-  env.mode.draw(env);
+  world.update();
+  world.draw();
 }
 
 void keyPressed() {
-  env.mode.keyPressed(env);
+  world.keyPressed();
 };
 
 void keyReleased() {
-  env.mode.keyReleased(env);
+  world.keyReleased();
 };
 
 void mouseDragged() {
-  env.mode.mouseDragged(env);
+  world.mouseDragged();
 }
 
 void mouseWheel(MouseEvent event) {
-  env.mode.mouseWheel(env, event);
+  world.mouseWheel(event);
 }
 
 void mouseClicked() {
-  env.mode.mouseClicked(env);
+  world.mouseClicked();
+}
+
+void mousePressed() {
+  world.mousePressed();
+}
+
+void mouseReleased() {
+  world.mouseReleased();
 }

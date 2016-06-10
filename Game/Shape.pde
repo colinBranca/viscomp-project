@@ -1,17 +1,21 @@
 abstract class Shape {
   PShape shape;
+  color fillColor;
 
-  void draw() {
-    shape(shape);
+  void draw(PGraphics surface) {
+    surface.shape(shape);
   }
 
-  void update() {}
+  void update() {
+  }
 
   void fill(float r, float g, float b) {
-    shape.setFill(color(r, g, b));
+    fillColor = color(r, g, b);
+    shape.setFill(fillColor);
   }
 
   void fill(color c) {
+    fillColor = c;
     shape.setFill(c);
   }
 }

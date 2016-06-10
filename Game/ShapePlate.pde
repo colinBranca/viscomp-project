@@ -24,23 +24,23 @@ class ShapePlate extends ShapeBox {
     rotSpeed = rotSpeed.add(n);
   }
 
-  void draw() {
-    pushMatrix();
+  void draw(PGraphics surface) {
+    surface.pushMatrix();
 
-    rotateX(rotX.value);
-    rotateZ(rotZ.value);
+    surface.rotateX(rotX.value);
+    surface.rotateZ(rotZ.value);
     // shape.rotateN() would rotate arround shape's N-axis,
     // which is not what we want here.
 
-    ball.draw();
+    ball.draw(surface);
 
     for (ShapeCylinder cylinder : cylinders) {
-      cylinder.draw();
+      cylinder.draw(surface);
     }
 
-    super.draw();
+    super.draw(surface);
 
-    popMatrix();
+    surface.popMatrix();
   }
 
   void update() {
