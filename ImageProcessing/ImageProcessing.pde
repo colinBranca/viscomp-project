@@ -26,6 +26,9 @@ float[][]gaussian = {
   {9, 12, 9}
 };
 
+public ImageProcessing(){
+  
+}
 
 void settings() {
   size(IMAGE_WIDTH + IMAGE_HEIGHT + IMAGE_WIDTH, IMAGE_HEIGHT);
