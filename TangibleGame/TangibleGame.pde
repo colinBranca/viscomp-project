@@ -19,8 +19,8 @@ void setup() {
   cam = new Movie(this, "testvideo.mp4"); //Put the video in the same directory
   cam.loop();
   
-  // Create plate
-  imgproc = new ImageProcessing(loadImage("board2.jpg"));
+  
+  imgproc = new ImageProcessing(cam.get());//(loadImage("board2.jpg"));
   hough = imgproc.applyTransformations(imgproc.img);
 
   graph = new QuadGraph(hough.lines, imgproc.img.width, imgproc.img.height);
@@ -33,7 +33,8 @@ void setup() {
   //Rotation
   TwoDThreeD twoDthree = new TwoDThreeD(imgproc.img.width, imgproc.img.height);
   PVector rot = twoDthree.get3DRotations(intersect);
-
+  
+  // Create plate
   env.plate = new ShapePlate(width/3, width/70, width/3);
   env.plate.fill(color(150, 150, 150, 120));
   //ICI
