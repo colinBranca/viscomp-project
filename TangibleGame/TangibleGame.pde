@@ -1,3 +1,5 @@
+import processing.video.*;
+
 Environment env = new Environment();
 Mode world;
 ImageProcessing imgproc;
@@ -5,13 +7,18 @@ QuadGraph graph;
 Hough hough;
 ArrayList<PVector> intersect = new ArrayList<PVector>();
 
+Movie cam;
+
 void settings() {
   fullScreen(P3D);
 }
 
 void setup() {
   noStroke();
-
+  
+  cam = new Movie(this, "testvideo.mp4"); //Put the video in the same directory
+  cam.loop();
+  
   // Create plate
   imgproc = new ImageProcessing(loadImage("board2.jpg"));
   hough = imgproc.applyTransformations(imgproc.img);
