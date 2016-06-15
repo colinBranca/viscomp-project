@@ -153,8 +153,8 @@ class QuadGraph {
   void drawMaxQuad(int x, int y) {
     int[] quad = findMaxQuad();
     ArrayList<PVector> quadLines = new ArrayList<PVector>();
-    
-    if(quad == null) {
+
+    if (quad == null) {
       return;
     }
 
@@ -191,6 +191,42 @@ class QuadGraph {
   void drawIntersection(PVector l1, PVector l2) {
     PVector in = intersection(l1, l2);
     ellipse(in.x, in.y, 10, 10);
+  }
+
+  void getIntersections(ArrayList<PVector> intersections) {
+    int[] quad = findMaxQuad();
+    ArrayList<PVector> quadLines = new ArrayList<PVector>();
+
+    if (quad == null) {
+      return;
+    }
+
+    quadLines.add(lines.get(quad[0]));
+    quadLines.add(lines.get(quad[1]));
+    quadLines.add(lines.get(quad[2]));
+    quadLines.add(lines.get(quad[3]));
+
+
+    PVector l1 = lines.get(quad[0]);
+    PVector l2 = lines.get(quad[1]);
+    PVector l3 = lines.get(quad[2]);
+    PVector l4 = lines.get(quad[3]);
+    
+    PVector i1 = intersection(l1, l2);
+    PVector i2 = intersection(l2, l3);
+    PVector i3 = intersection(l3, l4);
+    PVector i4 = intersection(l4, l1);
+    
+    intersections.add(i1);
+    intersections.add(i2);
+    intersections.add(i3);
+    intersections.add(i4);
+  }
+  
+  void drawListOfIntersections(ArrayList<PVector> intersections){
+    for(PVector in : intersections){
+      ellipse(in.x, in.y, 10, 10);
+    }
   }
 
   //  check of both arrays have same lengths and contents
@@ -403,4 +439,32 @@ class CWComparator implements Comparator<PVector> {
       return -1; 
     else return 1;
   }
+}
+
+public List<PVector> sortCorners(List<PVector> quad) {
+  // Sort corners so that they are ordered clockwise
+  PVector a = quad.get(0);
+  PVector b = quad.get(2);
+  PVector center = new PVector((a.x+b.x)/2, (a.y+b.y)/2);
+  java.util.Collections.sort(quad, new CWComparator(center));
+  // TODO:
+  // Re-order the corners so that the first one is the closest to the
+  // origin (0,0) of the image.
+  //
+  // You can use Collections.rotate to shift the corners inside the quad.
+  //ICI
+  int minIndex = 0;
+  double minTan = Math.atan2(quad.get(0).y, quad.get(0).x);
+  for (int i=1; i<4; i++) {
+    double tan = Math.atan2(quad.get(i).y, quad.get(i).x);
+    if (Math.abs((int)tan)<Math.abs((int)minTan)) {
+      minTan = tan;
+      minIndex = i;
+    }
+  }
+
+  Collections.rotate(quad, minIndex);
+  //A ICI
+
+  return quad;
 }

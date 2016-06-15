@@ -3,7 +3,7 @@ import java.util.List;
 import processing.core.PVector;
 import papaya.*;
 
-class TwoDThreeD {
+public class TwoDThreeD {
   
   // default focal length, well suited for most webcams
    float f = 700;
