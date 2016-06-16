@@ -1,3 +1,5 @@
+import processing.video.*;
+
 Environment env = new Environment();
 Mode world;
 
@@ -7,6 +9,9 @@ void settings() {
 
 void setup() {
   noStroke();
+
+  env.cam = new Movie(this, "testvideo.mp4");
+  env.cam.loop();
 
   // Create plate
   env.plate = new ShapePlate(width/3, width/70, width/3);
@@ -57,4 +62,8 @@ void mousePressed() {
 
 void mouseReleased() {
   world.mouseReleased();
+}
+
+void movieEvent(Movie m) {
+  m.read();
 }
