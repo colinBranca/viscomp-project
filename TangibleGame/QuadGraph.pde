@@ -121,7 +121,7 @@ class QuadGraph {
 
       boolean convex = isConvex(c12, c23, c34, c41);
       float area = areaOfQuad(c12, c23, c34, c41);
-      boolean valid = validArea(area, 1000, 350000);
+      boolean valid = validArea(area, 75000, 350000);
       boolean notFlat = nonFlatQuad(c12, c23, c34, c41);
 
       if (convex && valid && notFlat && area > maxArea) {
@@ -149,48 +149,19 @@ class QuadGraph {
     return area;
   }
 
-  //Dessine les quads
-  void drawMaxQuad(int x, int y) {
+  List<PVector> getMaxQuad() {
     int[] quad = findMaxQuad();
-    ArrayList<PVector> quadLines = new ArrayList<PVector>();
-    
-    if(quad == null) {
-      return;
+
+    if (quad == null) {
+      return null;
     }
 
-    quadLines.add(lines.get(quad[0]));
-    quadLines.add(lines.get(quad[1]));
-    quadLines.add(lines.get(quad[2]));
-    quadLines.add(lines.get(quad[3]));
-
-    drawPolarLines(quadLines, imgWidth, imgHeight, x, y);
-
-    PVector l1 = lines.get(quad[0]);
-    PVector l2 = lines.get(quad[1]);
-    PVector l3 = lines.get(quad[2]);
-    PVector l4 = lines.get(quad[3]);
-
-    pushMatrix();
-    pushStyle();
-    translate(x, y);
-    fill(204, 102, 0);
-    noStroke();
-
-    // (intersection() is a simplified version of the
-    // intersections() method you wrote last week, that simply
-    // return the coordinates of the intersection between 2 lines)
-    drawIntersection(l1, l2);
-    drawIntersection(l2, l3);
-    drawIntersection(l3, l4);
-    drawIntersection(l4, l1);
-
-    popStyle();
-    popMatrix();
-  }
-
-  void drawIntersection(PVector l1, PVector l2) {
-    PVector in = intersection(l1, l2);
-    ellipse(in.x, in.y, 10, 10);
+    List<PVector> result = new ArrayList<PVector>();
+    result.add(intersection(lines.get(quad[0]), lines.get(quad[1])));
+    result.add(intersection(lines.get(quad[1]), lines.get(quad[2])));
+    result.add(intersection(lines.get(quad[2]), lines.get(quad[3])));
+    result.add(intersection(lines.get(quad[3]), lines.get(quad[0])));
+    return result;
   }
 
   //  check of both arrays have same lengths and contents
@@ -328,11 +299,7 @@ class QuadGraph {
   /** Compute the area of a quad, and check it lays within a specific range
    */
   boolean validArea(float area, float min_area, float max_area) {
-
-    System.out.println(area);
-    boolean valid = (area < max_area && area > min_area);
-    if (!valid) System.out.println("Area out of range");
-    return valid;
+    return (area < max_area && area > min_area);
   }
 
   /** Compute the (cosine) of the four angles of the quad, and check they are all large enough
@@ -341,7 +308,7 @@ class QuadGraph {
   boolean nonFlatQuad(PVector c1, PVector c2, PVector c3, PVector c4) {
 
     // cos(70deg) ~= 0.3
-    float min_cos = 0.5f;
+    float min_cos = 0.8;
 
     PVector v21= PVector.sub(c1, c2);
     PVector v32= PVector.sub(c2, c3);
@@ -353,38 +320,6 @@ class QuadGraph {
     float cos3=Math.abs(v43.dot(v14) / (v43.mag() * v14.mag()));
     float cos4=Math.abs(v14.dot(v21) / (v14.mag() * v21.mag()));
 
-    if (cos1 < min_cos && cos2 < min_cos && cos3 < min_cos && cos4 < min_cos)
-      return true;
-    else {
-      System.out.println("Flat quad");
-      return false;
-    }
-  }
-
-  List<PVector> sortCorners(List<PVector> quad) {
-
-    // 1 - Sort corners so that they are ordered clockwise
-    PVector a = quad.get(0);
-    PVector b = quad.get(2);
-
-    PVector center = new PVector((a.x+b.x)/2, (a.y+b.y)/2);
-
-    Collections.sort(quad, new CWComparator(center));
-
-
-
-    // 2 - Sort by upper left most corner
-    PVector origin = new PVector(0, 0);
-    float distToOrigin = 1000;
-
-    for (PVector p : quad) {
-      if (p.dist(origin) < distToOrigin) distToOrigin = p.dist(origin);
-    }
-
-    while (quad.get(0).dist(origin) != distToOrigin)
-      Collections.rotate(quad, 1);
-
-
-    return quad;
+    return cos1 < min_cos && cos2 < min_cos && cos3 < min_cos && cos4 < min_cos;
   }
 }
