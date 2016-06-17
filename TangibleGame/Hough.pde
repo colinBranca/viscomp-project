@@ -125,10 +125,6 @@ public class Hough {
       lines.add(new PVector(r, phi));
     }
   }
-  
-  void drawBestLines(int x, int y) {
-    drawPolarLines(lines, edgeImg.width, edgeImg.height, x, y);
-  }
 }
 
 class HoughComparator implements java.util.Comparator<Integer> {
