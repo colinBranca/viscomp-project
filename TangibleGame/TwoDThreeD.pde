@@ -16,17 +16,17 @@ class TwoDThreeD {
   // Real physical coordinates of the Lego board in mm
   float boardSize = 380.f; // large Duplo board
   // float boardSize = 255.f; // smaller Lego board
-
+  float halfBoard = boardSize/2.0;
   // the 3D coordinates of the physical board corners, clockwise
   float [][] physicalCorners = {
     // TODO:
     // Store here the 3D coordinates of the corners of
     // the real Lego board, in homogenous coordinates
     // and clockwise.
-    {-128, -128, 0, 1}, 
-    {128, -128, 0, 1}, 
-    {128, 128, 0, 1}, 
-    {-128, 128, 0, 1}
+    {-halfBoard, -halfBoard, 0, 1}, 
+    {halfBoard, -halfBoard, 0, 1}, 
+    {halfBoard, halfBoard, 0, 1}, 
+    {-halfBoard, halfBoard, 0, 1}
   };
 
   public TwoDThreeD(int width, int height) {
